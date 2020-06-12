@@ -14,7 +14,11 @@ RUN \
     apt-get update &&\
     apt-get install -y openjdk-8-jdk &&\ 
     update-alternatives --config java 
-RUN echo "Install Percona XtraBackup" && \
+RUN echo "Install Percona XtraBackup depends" && \
+    apt-get update &&\
+    apt-get install -y libatomic1 libcurl4-openssl-dev libdbd-mysql-perl libdbi-perl libev4 \
+        libmariadb3 mariadb-common mysql-common rsync 
+RUN echo "Install Percona XtraBackup" && \   
     cd /workbasedir/ &&\
     dpkg -i percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb && \
     rm -f percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb && \
