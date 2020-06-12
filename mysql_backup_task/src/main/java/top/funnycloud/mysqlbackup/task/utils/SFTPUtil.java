@@ -130,13 +130,7 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void upload(String directory, String sftpFileName, InputStream input) throws SftpException{
-        try {
-            sftp.cd(directory);
-        } catch (SftpException e) {
-            log.warn("directory is not exist");
-            sftp.mkdir(directory);
-            sftp.cd(directory);
-        }
+        cdDir(directory);
         sftp.put(input, sftpFileName);
         log.info("file:{} is upload successful" , sftpFileName);
     }
@@ -153,13 +147,7 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void upload(String directory, String sftpFileName, String uploadFile) throws FileNotFoundException, SftpException{
-        try {
-            sftp.cd(directory);
-        } catch (SftpException e) {
-            log.warn("directory is not exist");
-            sftp.mkdir(directory);
-            sftp.cd(directory);
-        }
+        cdDir(directory);
         sftp.put(uploadFile, sftpFileName);
         log.info("file:{} is upload successful" , sftpFileName);
     }
@@ -295,4 +283,25 @@ public class SFTPUtil {
 //        sftp.upload("/data/work", "test_sftp_upload.csv", is);
 //        sftp.logout();
 //    }
+
+    private void cdDir(String path){
+        //String splitChar=  File.separator;
+        String[] folders = path.split( "/" );
+        for ( String folder : folders ) {
+            if ( folder.length() > 0 ) {
+                try {
+                    sftp.cd( folder );
+                }
+                catch ( SftpException e ) {
+                    try {
+                        sftp.mkdir( folder );
+                        sftp.cd( folder );
+                    }
+                    catch ( SftpException ee ) {
+                       log.error("mkdir error");
+                    }
+                }
+            }
+        }
+    }
 }

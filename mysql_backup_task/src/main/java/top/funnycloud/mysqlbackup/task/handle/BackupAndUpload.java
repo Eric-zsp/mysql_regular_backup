@@ -67,7 +67,7 @@ public class BackupAndUpload {
         }
         if(backupTaskModel.getP_remoteType()>0){
             if(backupTaskModel.getP_remoteType()==2){
-                uploadSftp(backupTaskModel.getP_remoteStr(),fileName.substring(0,8),backupTaskModel.getP_dbname()+fileName,saveDir+File.separator+fileName);
+                uploadSftp(backupTaskModel.getP_remoteStr(),fileName.substring(0,8)+"/"+GlobleImpl.getGlobleCfgStatic().getLocalHostName(),backupTaskModel.getP_dbname()+fileName,saveDir+File.separator+fileName);
             }
         }
         backupTaskModel.setP_lastTime(new Date());

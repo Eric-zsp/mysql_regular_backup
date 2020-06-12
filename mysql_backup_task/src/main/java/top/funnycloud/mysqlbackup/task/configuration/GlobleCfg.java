@@ -33,7 +33,8 @@ public class GlobleCfg {
     String  dumppath;
     @Value("${mysqlback.runCorn}")
     String  runCorn;
-
+    @Value("${mysqlback.localHostName}")
+    String  localHostName;
     public String getDataPath(){
         return dataPath;
     }
@@ -48,6 +49,9 @@ public class GlobleCfg {
     }
     public String getRunCorn(){
         return runCorn;
+    }
+    public String getLocalHostName(){
+        return localHostName;
     }
 
     ObjectMapper objectMapper =new ObjectMapper();

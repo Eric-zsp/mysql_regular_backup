@@ -6,13 +6,10 @@
         <property name="data_LOG_base_dir">./log/</property>
     </properties>
     <appenders>
-        <Console name="consolePrint" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}[%p] [%t] %-5level %logger{36} - %msg%n" />
-        </Console>
 
         <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="tcpServer" fileName="${data_LOG_base_dir}/tcpServer/tcpServer.log"
-                     filePattern="${data_LOG_base_dir}/tcpServer/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="consolePrint" fileName="${data_LOG_base_dir}/consolePrint/consolePrint.log"
+                     filePattern="${data_LOG_base_dir}/consolePrint/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}[%p] - %l - %m%n"/>
@@ -22,183 +19,16 @@
             </Policies>
 
             <DefaultRolloverStrategy>
-                <Delete basePath="${data_LOG_base_dir}/tcpServer/" maxDepth="2">
+                <Delete basePath="${data_LOG_base_dir}/consolePrint/" maxDepth="2">
                     <IfFileName glob="*/info-*.log" />
                     <IfLastModified age="30d" />
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
-        <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="WebApiRequest" fileName="${data_LOG_base_dir}/WebApiRequest/WebApiRequest.log"
-                     filePattern="${data_LOG_base_dir}/WebApiRequest/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
-            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}[%p] - %l - %m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100 MB"/>
-            </Policies>
-            <DefaultRolloverStrategy>
-                <Delete basePath="${data_LOG_base_dir}/WebApiRequest/" maxDepth="2">
-                    <IfFileName glob="*/info-*.log" />
-                    <IfLastModified age="30d" />
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
-
-
-        <!-- sendInqueriyData的任何配置都不要改！！！ -->
-        <RollingFile name="sendInqueriyData" fileName="${data_LOG_base_dir}/sendInqueriyData/cur.log"
-                     filePattern="${data_LOG_base_dir}/sendInqueriyData/$${date:yyyy-MM}/%d{yyyy-MM-dd}.log">
-            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-            <DefaultRolloverStrategy>
-                <Delete basePath="${data_LOG_base_dir}/sendInqueriyData/" maxDepth="2">
-                    <IfFileName glob="*/*.log" />
-                    <IfLastModified age="30d" />
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
-        <!-- receiveInqueriyData的任何配置都不要改！！！ -->
-        <RollingFile name="receiveInqueriyData" fileName="${data_LOG_base_dir}/receiveInqueriyData/cur.log"
-                     filePattern="${data_LOG_base_dir}/receiveInqueriyData/$${date:yyyy-MM}/%d{yyyy-MM-dd}.log">
-            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-            <DefaultRolloverStrategy>
-                <Delete basePath="${data_LOG_base_dir}/receiveInqueriyData/" maxDepth="2">
-                    <IfFileName glob="*/*.log" />
-                    <IfLastModified age="30d" />
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
-
-        <!-- inqueriyTaskPointData的任何配置都不要改！！！ -->
-        <RollingFile name="inqueriyTaskPointData" fileName="${data_LOG_base_dir}/inqueriyTaskPointData/cur.log"
-                     filePattern="${data_LOG_base_dir}/inqueriyTaskPointData/$${date:yyyy-MM}/%d{yyyy-MM-dd}.log">
-            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-            <DefaultRolloverStrategy>
-                <Delete basePath="${data_LOG_base_dir}/inqueriyTaskPointData/" maxDepth="2">
-                    <IfFileName glob="*/*.log" />
-                    <IfLastModified age="30d" />
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
-        <!-- SerialPortClient的任何配置都不要改！！！ -->
-        <RollingFile name="debugRecord" fileName="${data_LOG_base_dir}/debugRecord/cur.log"
-                     filePattern="${data_LOG_base_dir}/debugRecord/$${date:yyyy-MM}/%d{yyyy-MM-dd}.log">
-            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-            <DefaultRolloverStrategy>
-                <Delete basePath="${data_LOG_base_dir}/debugRecord/" maxDepth="2">
-                    <IfFileName glob="*/*.log" />
-                    <IfLastModified age="30d" />
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
-        <!-- SerialPortClient的任何配置都不要改！！！ -->
-        <RollingFile name="SerialPortClient" fileName="${data_LOG_base_dir}/SerialPortClient/cur.log"
-                     filePattern="${data_LOG_base_dir}/SerialPortClient/$${date:yyyy-MM}/%d{yyyy-MM-dd}.log">
-            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-            <DefaultRolloverStrategy>
-                <Delete basePath="${data_LOG_base_dir}/SerialPortClient/" maxDepth="2">
-                    <IfFileName glob="*/*.log" />
-                    <IfLastModified age="30d" />
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
-        <!-- inqueriyTaskPointData的任何配置都不要改！！！ -->
-        <RollingFile name="TimeInterceptor" fileName="${data_LOG_base_dir}/TimeInterceptor/cur.log"
-                     filePattern="${data_LOG_base_dir}/TimeInterceptor/$${date:yyyy-MM}/%d{yyyy-MM-dd}.log">
-            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-            <DefaultRolloverStrategy>
-                <Delete basePath="${data_LOG_base_dir}/TimeInterceptor/" maxDepth="2">
-                    <IfFileName glob="*/*.log" />
-                    <IfLastModified age="30d" />
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
-        <!--<RollingFile name="RollingFileWarn" fileName="${sys:user.home}/logs/warn.log"-->
-                     <!--filePattern="${sys:user.home}/logs/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log">-->
-            <!--<ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>-->
-            <!--<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>-->
-            <!--<Policies>-->
-                <!--<TimeBasedTriggeringPolicy/>-->
-                <!--<SizeBasedTriggeringPolicy size="100 MB"/>-->
-            <!--</Policies>-->
-            <!--&lt;!&ndash; DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 &ndash;&gt;-->
-            <!--<DefaultRolloverStrategy max="20"/>-->
-        <!--</RollingFile>-->
-        <!--<RollingFile name="RollingFileError" fileName="${sys:user.home}/logs/error.log"-->
-                     <!--filePattern="${sys:user.home}/logs/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log">-->
-            <!--<ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>-->
-            <!--<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>-->
-            <!--<Policies>-->
-                <!--<TimeBasedTriggeringPolicy/>-->
-                <!--<SizeBasedTriggeringPolicy size="100 MB"/>-->
-            <!--</Policies>-->
-        <!--</RollingFile>-->
+       
     </appenders>
 
     <loggers>
-        <!-- 将业务dao接口填写进去,并用控制台输出即可 -->
-
-
-
-
-        <logger name="SerialPortClient" level="DEBUG" additivity="false">
-            <appender-ref ref="SerialPortClient"/>
-        </logger>
-        <logger name="sendInqueriyData" level="DEBUG" additivity="false">
-            <appender-ref ref="sendInqueriyData"/>
-        </logger>
-        <logger name="receiveInqueriyData" level="DEBUG" additivity="false">
-            <appender-ref ref="receiveInqueriyData"/>
-        </logger>
-        <logger name="inqueriyTaskPointData" level="DEBUG" additivity="false">
-            <appender-ref ref="inqueriyTaskPointData"/>
-        </logger>
-        <logger name="tcpServer" level="DEBUG" additivity="false">
-            <appender-ref ref="tcpServer"/>
-        </logger>
-        <logger name="WebApiRequest" level="DEBUG" additivity="false">
-            <appender-ref ref="WebApiRequest"/>
-        </logger>
-        <logger name="TimeInterceptor" level="DEBUG" additivity="false">
-            <appender-ref ref="TimeInterceptor"/>
-        </logger>
-        <logger name="debugRecord" level="DEBUG" additivity="false">
-            <appender-ref ref="debugRecord"/>
-        </logger>
-        <!--<logger name="top.funnycloud.iotdata.finalstation.dao.IDao.TRealtimeAlarmDao" level="DEBUG" additivity="false">-->
-            <!--<appender-ref ref="consolePrint"/>-->
-        <!--</logger>-->
         <root level="info">
             <appender-ref ref="consolePrint" />
         </root>
