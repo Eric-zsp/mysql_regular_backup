@@ -4,24 +4,23 @@ FROM mariadb:10.4.8
 MAINTAINER  Eric
 
 #文件到镜像中
-# COPY  finalstation/  /finalstation/
+COPY  file/percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb  /workbasedir/
 
-#暴露给容器外的端口: http mysql
-EXPOSE 8080 3306
 
 RUN \
     # apt-get update && \
     # apt-get install -y curl wget lsb-release python python-pip && \
+    echo "Install openjdk" && \
+    apt-get install openjdk-8-jdk \ 
     echo "Install Percona XtraBackup" && \
-    wget https://www.percona.com/downloads/Percona-XtraBackup-LATEST/Percona-XtraBackup-8.0.12/binary/debian/bionic/x86_64/percona-xtrabackup-dbg-80_8.0.12-1.bionic_amd64.deb && \
-    dpkg -i percona-xtrabackup-dbg-80_8.0.12-1.bionic_amd64.deb && \
-    rm -f percona-xtrabackup-dbg-80_8.0.12-1.bionic_amd64.deb && \
+    cd /workbasedir/ \
+    dpkg -i percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb && \
+    rm -f percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb && \
     apt-get update && \
     apt-get install -y percona-xtrabackup-80 && \  
-    apt-get install openjdk-8-jdk \ 
-    rm -rf /var/lib/apt/lists/*
 
 
-
+#暴露给容器外的端口: http mysql
+EXPOSE 8080 3306
 
 
