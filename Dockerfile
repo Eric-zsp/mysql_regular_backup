@@ -11,9 +11,9 @@ RUN \
     # apt-get update && \
     # apt-get install -y curl wget lsb-release python python-pip && \
     echo "Install openjdk" && \
-    # add-apt-repository ppa:openjdk-r/ppa &&\
-    # apt-get update &&\
-    apt-get install openjdk-8-jdk &&\ 
+    add-apt-repository ppa:openjdk-r/ppa &&\
+    apt-get update &&\
+    apt-get install -y openjdk-8-jdk &&\ 
     update-alternatives --config java 
 RUN echo "Install Percona XtraBackup" && \
     cd /workbasedir/ &&\
