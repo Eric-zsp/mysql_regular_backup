@@ -7,10 +7,7 @@ MAINTAINER  Eric
 COPY  file/percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb  /workbasedir/
 
 
-RUN \
-    # apt-get update && \
-    # apt-get install -y curl wget lsb-release python python-pip && \
-    echo "Install openjdk" && \
+RUN echo "Install openjdk" && \
     apt-get update &&\
     apt-get install -y openjdk-8-jdk &&\ 
     update-alternatives --config java 
@@ -22,7 +19,7 @@ RUN echo "Install Percona XtraBackup" && \
     dpkg -i percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb && \
     rm -f percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb && \
     apt-get update && \
-    apt-get install -y percona-xtrabackup-80   
+    apt-get install -y percona-xtrabackup-24   
 
 
 #暴露给容器外的端口: http mysql
