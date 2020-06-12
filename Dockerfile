@@ -4,7 +4,7 @@ FROM mariadb:10.4.8
 MAINTAINER  Eric
 
 #文件到镜像中
-COPY  finalstation/  /finalstation/
+# COPY  finalstation/  /finalstation/
 
 #暴露给容器外的端口: http mysql
 EXPOSE 8080 3306
