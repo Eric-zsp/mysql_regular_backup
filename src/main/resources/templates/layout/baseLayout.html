@@ -1,0 +1,55 @@
+
+<#macro baseheading>
+    <!-- baseheading  template-->
+</#macro>
+
+<#macro basecontent>
+    <!-- basecontent template-->
+</#macro>
+<#macro basefooter>
+    <!-- basefooter template-->
+</#macro>
+
+
+<#macro doLayout title="">
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <title>${title?html}-</title>
+
+        <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="/plugins/font-awesome-4.7.0/css/font-awesome.min.css?v=4"  rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="/plugins/ionicons-2.0.1/css/ionicons.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/plugins/ALTE/css/ALTE.css"/>
+        <!-- bootstrap wysihtml5 - text editor -->
+        <link rel="stylesheet" href="/plugins/ALTE/plugins/bootstrap3-wysihtml5.min.css">
+        <script src="/js/jquery/jquery-1.10.2.min.js" type="text/javascript"></script>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="/plugins/ALTE/js/html5shiv.min.js"></script>
+        <script src="/plugins/ALTE/js/respond.min.js"></script>
+        <![endif]-->
+
+        <@baseheading />
+    </head>
+    <body id="mainbody"  >
+    <@basecontent />
+
+    <!--<script src="/js/jquery/jquery-ui-1.10.2.custom.min.js"></script>-->
+    <script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/jquery/jquery.cookie.js"></script>
+    <script src="/js/jquery/jquery.md5.js"></script>
+    <script src="/plugins/artDialog/dialog.js"></script>
+    <link href="/plugins/artDialog/css/dialog.css" rel="stylesheet"/>
+
+    <script src="/js/powerMonitor/comm.js?v=2.2"></script>
+    <@basefooter />
+    </body>
+    </html>
+</#macro>

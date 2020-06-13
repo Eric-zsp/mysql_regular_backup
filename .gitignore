@@ -2,6 +2,8 @@
 .settings
 .vscode
 .project
+.factorypath
 *.iml
 *.classpath
-*/target
+target
+dbcfgs.json

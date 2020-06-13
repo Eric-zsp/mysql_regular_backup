@@ -1,0 +1,108 @@
+<#import "/layout/baseLayout.html" as layoutbase />
+<#macro page title>
+    <@layoutbase.doLayout title=title />
+</#macro>
+
+
+<#macro maincontent>
+    <!-- pagecontent page -->
+</#macro>
+<#macro mainpagefooter>
+    <!-- pagefooter page-->
+</#macro>
+<#macro mainfooter>
+    <!-- pagefooter page-->
+</#macro>
+
+<#macro baseheading>
+
+
+
+
+
+    <link href="/plugins/ALTE/css/skins/_all-skins.css" rel="stylesheet"/>
+    <!--<link href="/plugins/ALTE/plugins/iCheck/square/blue.css" type="text/css" rel="stylesheet"/>-->
+    <link href="/plugins/ALTE/plugins/iCheck/all.css" type="text/css" rel="stylesheet"/>
+    <link href="/css/jquery.pagination.css" type="text/css" rel="stylesheet"/>
+
+
+    <@mainheading />
+</#macro>
+<#assign baseheading = baseheading in layoutbase />
+<#macro basecontent>
+    <div class="wrapper">
+
+        <@maincontent />
+
+
+        <@mainpagefooter />
+
+    </div>
+
+
+
+
+
+
+
+
+</#macro>
+<#assign basecontent = basecontent in layoutbase />
+<#macro basefooter>
+    <link href="/plugins/elements/css/elements.css" rel="stylesheet"/>
+    <!-- iCheck -->
+    <script src="/plugins/ALTE/plugins/iCheck/icheck.min.js"></script>
+    <!-- FastClick -->
+    <!--<script src="/plugins/fastclick/fastclick.min.js"></script>-->
+    <script src="/plugins/ALTE/js/demo.js"></script>
+    <script src="/plugins/ALTE/js/app.min.js"></script>
+    <script src="/js/mortise/core.js"></script>
+    <script src="/js/mortise/comm.js"></script>
+
+    <script src="/js/jquery/jquery.pagination.min.js"></script>
+
+
+    <script>
+        $(function () {
+
+            $("#mainbody").addClass("skin-blue").addClass("sidebar-mini");
+
+            mortise_layout.showMenu();
+            // require(['/plugins/fastclick/fastclick.min.js'],function () {});
+//            require(['/plugins/ALTE/dist/js/app.min.js'],function () {});
+        });
+        function checkBrowser() {
+            try {
+                if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+                    var desc = navigator.mimeTypes['application/x-shockwave-flash'].description.toLowerCase();
+                    if (desc.indexOf('adobe') > -1 || navigator.appVersion.indexOf('UBrowser') > -1) {
+                        $("#borwserWarning").animate({ "height": "show" });
+                        setTimeout(_closeWarning, 2000);
+                        return;
+                    }
+                    var mimeType = navigator.mimeTypes;
+                    for (var i = 0 ; i < mimeType.length; i++) {
+                        if (mimeType[i]['type'].indexOf('sogou') > -1) {
+                            $("#borwserWarning").animate({ "height": "show" });
+                            setTimeout(_closeWarning, 2000);
+                            break;
+                        }
+                    }
+                }
+            } catch (e) {
+                return;
+            }
+        }
+        function _closeWarning() {
+            $("#borwserWarning").animate({ "height": "hide" });
+        }
+        $(document).ready(function () {
+            checkBrowser();
+        });
+
+
+    </script>
+
+    <@mainfooter />
+</#macro>
+<#assign basefooter = basefooter in layoutbase />
