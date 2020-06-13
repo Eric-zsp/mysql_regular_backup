@@ -4,7 +4,7 @@ FROM mariadb:10.4.8
 MAINTAINER  Eric
 
 #文件到镜像中
-COPY  file/percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb  /workbasedir/
+COPY  file/*  /workbasedir/
 
 
 RUN echo "Install openjdk" && \
@@ -25,4 +25,6 @@ RUN echo "Install Percona XtraBackup" && \
 #暴露给容器外的端口: http mysql
 EXPOSE 8080 3306
 
+#执行的命令
+ENTRYPOINT  ["java","-jar","-Duser.timezone=GMT+08","/workbasedir/backup-app/mysql_regular_backup-1.0-SNAPSHOT.jar"]   
 
