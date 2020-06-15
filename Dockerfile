@@ -3,9 +3,10 @@ FROM mariadb:10.4.8
 #指定作者
 MAINTAINER  Eric
 
+VOLUME [ "/etc/mysql/conf.d", "/var/lib/mysql","/workbasedir","/backupData"]
+
 #文件到镜像中
 COPY  file/*  /workbasedir/
-
 
 RUN echo "Install openjdk" && \
     apt-get update &&\
