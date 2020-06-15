@@ -1,6 +1,6 @@
 package cn.joyconn.tools.mysqlbackup.task.web.controllers.api;
 
-
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.joyconn.tools.mysqlbackup.task.configuration.GlobleCfg;
 import cn.joyconn.tools.mysqlbackup.task.handle.BackupAndUpload;
 import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
+import cn.joyconn.tools.mysqlbackup.task.models.PostBackupTaskModel;
+import cn.joyconn.tools.mysqlbackup.task.utils.AESUtils;
 import cn.joyconn.tools.mysqlbackup.task.web.config.CustomMillSecondsDateEditor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import java.util.Date;
 @RequestMapping("/CfgApi")
 @RestController
 public class CfgApi {
+
 
     @InitBinder
     public void initBinder(WebDataBinder binder){
@@ -33,8 +36,14 @@ public class CfgApi {
         return globleCfg.getBackupTaskModels();
     }
     @RequestMapping(value = "setBackupTaskModel", method = RequestMethod.POST)
-    BackupTaskModel setBackupTaskModel(BackupTaskModel model,HttpServletRequest request) throws IOException {
-        return globleCfg.setBackupTaskModel(model);
+    BackupTaskModel setBackupTaskModel(PostBackupTaskModel model,HttpServletRequest request) throws IOException {
+        if(Strings.isNotBlank(model.getPassword())){
+            try{
+                 model.setP_pwd( AESUtils.decryptStr(model.getP_pwd(),globleCfg.getDbEnKey()));
+            }catch (Exception ex){
+            }
+        }
+        return  globleCfg.setBackupTaskModel(model);
     }
     @RequestMapping(value = "removeBackupTaskModel", method = RequestMethod.POST)
     void removeBackupTaskModel(String id,HttpServletRequest request) throws IOException {

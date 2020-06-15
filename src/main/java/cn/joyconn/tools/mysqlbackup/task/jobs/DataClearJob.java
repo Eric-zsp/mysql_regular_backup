@@ -6,6 +6,7 @@ import cn.joyconn.tools.mysqlbackup.task.configuration.GlobleImpl;
 import cn.joyconn.tools.mysqlbackup.task.jobs.baseJob.SingleChannelBaseJob;
 import cn.joyconn.tools.mysqlbackup.task.jobs.baseJob.SingletonBaseJob;
 import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
+import cn.joyconn.tools.mysqlbackup.task.utils.LogHelper;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -42,39 +43,38 @@ public class DataClearJob extends SingleChannelBaseJob {
         try {
             Calendar calendar = Calendar.getInstance();
             Date now =new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
             try {
                 Collection<BackupTaskModel> backupTaskModels = GlobleImpl.getGlobleCfgStatic().getBackupTaskModels();
-                if (backupTaskModels!=null){
+                if (backupTaskModels!=null){                    
+                    String _fileName = "";
+                    File file;
+                    File[] files;
                     for(BackupTaskModel backupTaskModel:backupTaskModels){
-                        if(backupTaskModel!=null){
+                        if(backupTaskModel!=null&&backupTaskModel.getP_dbAndTables()!=null){
                             calendar.setTime(now);
-                            calendar.add(Calendar.DATE,0-backupTaskModel.getP_retentionTime());
-                            File file = new File(GlobleImpl.getGlobleCfgStatic().getSavepath()+"/"+backupTaskModel.getP_dbname());
-                            if (file.exists()) {
-                                File[] files = file.listFiles();
-                                if (files != null) {
-                                    String _fileName = dateFormat.format(calendar.getTime())+".sql.gz";
-                                    for(File f:files){
-                                        if(f.isFile()){
-                                            if(_fileName.compareTo(f.getName())>0){
-                                               f.delete();
-                                            }
+                            calendar.add(Calendar.DATE,0-backupTaskModel.getP_retentionTime());         
+                            _fileName = dateFormat.format(calendar.getTime());
+                            file = new File(GlobleImpl.getGlobleCfgStatic().getSavepath()+ File.separator+backupTaskModel.getP_id() + File.separator);
+                            files = file.listFiles();
+                            if (files != null) {
+                                for(File f:files){
+                                    if(f.isDirectory()&&f.getName().length()==10){                                                
+                                        if(_fileName.compareTo(f.getName())>0){
+                                            f.delete();
                                         }
-
                                     }
                                 }
-                            }
+                            }                            
                         }
                     }
                 }
-
             }catch (Exception ex){
-
+                LogHelper.logger().error(ex.getMessage());
             }
 
         }catch (Exception ex){
-
+            LogHelper.logger().error(ex.getMessage());
         }
     }
 

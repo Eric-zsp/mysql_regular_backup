@@ -26,12 +26,8 @@ public class GlobleCfg {
      String  dbEnKey;
     @Value("${databack.savepath}")
     String  savepath;
-    @Value("${databack.dumppath}")
-    String  dumppath;
     @Value("${databack.runCorn}")
     String  runCorn;
-    @Value("${databack.localHostName}")
-    String  localHostName;
     public String getDataPath(){
         return dataPath;
     }
@@ -41,14 +37,8 @@ public class GlobleCfg {
     public String getSavepath(){
         return savepath;
     }
-    public String getDumppath(){
-        return dumppath;
-    }
     public String getRunCorn(){
         return runCorn;
-    }
-    public String getLocalHostName(){
-        return localHostName;
     }
 
     ObjectMapper objectMapper =new ObjectMapper();
