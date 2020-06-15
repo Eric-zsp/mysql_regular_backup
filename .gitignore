@@ -6,4 +6,5 @@
 *.iml
 *.classpath
 target
+log
 dbcfgs.json
