@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriBuilder;
+
 import cn.joyconn.tools.mysqlbackup.task.configuration.GlobleCfg;
 import cn.joyconn.tools.mysqlbackup.task.handle.BackupAndUpload;
 import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Date;
 
@@ -49,7 +52,10 @@ public class CfgApi {
             }
         }
         try{
-            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectMapper objectMapper = new ObjectMapper();            
+            if(model.getP_name()!=null){
+                model.setP_name(URLDecoder.decode(model.getP_name(), "utf-8"));
+            }
             saveModel=objectMapper.readValue(objectMapper.writeValueAsString(model), BackupTaskModel.class);           
         }catch (Exception ex){
         }       

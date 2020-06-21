@@ -668,6 +668,8 @@
                             quickClose: true,
                         }).show();
                         return false;
+                    }else{
+                        postObj.p_name=encodeURI(postObj.p_name);
                     }
                     if (postObj.p_host.trim()=="") {
                         dialog({
