@@ -23,7 +23,6 @@ RUN echo "Install Percona XtraBackup" && \
     rm -f percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb && \
     apt-get update && \
     apt-get install -y percona-xtrabackup-24   
-RUN apt-get install -y perl-Digest-MD5
 
 
 #暴露给容器外的端口: http mysql
