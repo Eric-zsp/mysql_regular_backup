@@ -4,7 +4,7 @@ FROM mariadb:10.4.8
 MAINTAINER  Eric
 
 VOLUME [ "/etc/mysql", "/var/lib/mysql","/data"]
-WORKDIR /data/
+RUN mkdir /data
 #文件到镜像中
 COPY  file/*  /data/
 
