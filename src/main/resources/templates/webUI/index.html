@@ -151,6 +151,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">
+                                        备份类型
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <select data-name="p_backType" class="form-control  feild-edit">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
                                         压缩备份
                                     </label>
                                     <div class="col-sm-10">
@@ -854,6 +863,10 @@
             }
         }
         $(function () {
+            $.each(backupSttingPage_operat.data.backType.valueNames,function(i,vm){
+                $('.edit_div .feild-edit[data-name="p_backType"]').append('<option value="'+vm.value+'" '+(i==0?'selected':'')+'>'+vm.name+'</option>')
+            })
+            
             getList();
         });
     </script>

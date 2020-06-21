@@ -130,7 +130,7 @@ public class BackupTaskModel {
         this.p_port = p_port;
     }
 
-    @ApiModelProperty("备份方式 1:innobackupex24(mysql 5) 2:mariadb")
+    @ApiModelProperty("备份类型 1:innobackupex24(mysql 5) 2:mariadb")
     public Integer getP_backType() {
         return p_backType;
     }
