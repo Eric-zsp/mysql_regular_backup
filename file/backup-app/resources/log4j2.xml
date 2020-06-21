@@ -3,7 +3,7 @@
     <properties>
         <!-- 数据持久化存储根路径 要与finalCfg中的终端数据存储目录（dataDir）子目录logs保持一致 -->
         <!--<property name="data_LOG_base_dir">${ctx:data_LOG_base_dir}</property>-->
-        <property name="data_LOG_base_dir">./log/</property>
+        <property name="data_LOG_base_dir">/data/backup-app/log/</property>
     </properties>
     <appenders>
 

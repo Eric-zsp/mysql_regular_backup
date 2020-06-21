@@ -179,6 +179,11 @@
                                 <includes>
                                     <!-- <include>*.properties</include> -->
                                 </includes>
+                                <excludes>
+                                    <exclude>
+                                        src/main/resources/log4j2.xml
+                                    </exclude>
+                                </excludes>
                             </resource>
                         </resources>
                         <outputDirectory>${basedir}/file/backup-app/resources</outputDirectory>

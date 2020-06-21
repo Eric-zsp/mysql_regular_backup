@@ -12,14 +12,16 @@
 安装docker后运行
 ```
 docker run --name mysql-regular-backup  --restart=always  --privileged -d \
--v /data/stdm1/dockerData/mysql-regular-backup/mariadb/data/:/var/lib/mysql \
 -v /data/stdm1/dockerData/mysql-regular-backup/mariadb/conf:/etc/mysql/conf.d \
--v /data/stdm1/dockerData/mysql-regular-backup/workbasedir:/workbasedir \
--v /data/stdm1/dockerData/mysql-regular-backup/backupData:/backupData \
--p 10011:3306 -p 10012:8080 \
-docker pull registry.cn-beijing.aliyuncs.com/eric_zsp/mysql-regular-backup:0.0.1
+-v /data/stdm1/dockerData/mysql-regular-backup/mariadb/data/:/var/lib/mysql \
+-v /data/stdm1/dockerData/mysql-regular-backup/data:/data \
+-p 10011:3306 -p 10012:8019 \
+-e MYSQL_ROOT_PASSWORD=backup12--3 \
+registry.cn-beijing.aliyuncs.com/eric_zsp/mysql-regular-backup:0.0.1
 ```
-
+将file/backup-app拷贝到远程的/data/stdm1/dockerData/mysql-regular-backup/data中
+执行docker restart mysql-regular-backup
+访问http://ip:10012/home/index
 
 #### 使用说明
 
@@ -36,7 +38,7 @@ docker pull registry.cn-beijing.aliyuncs.com/eric_zsp/mysql-regular-backup:0.0.1
 // mariadb映射端口
 -p 10011:3306 \
 // 管理、配置页面访问映射端口
--p 10012:8080 \
+-p 10012:8019 \
 ```
 
 
