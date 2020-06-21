@@ -10,8 +10,7 @@ COPY  file/*  /data/
 
 RUN echo "Install openjdk" && \
     apt-get update &&\
-    apt-get install -y openjdk-8-jdk &&\ 
-    update-alternatives --config java 
+    apt-get install -y openjdk-8-jdk   
 RUN dpkg --purge --force-depends ca-certificates-java &&\
     apt-get install ca-certificates-java
 RUN echo "Install Percona XtraBackup depends" && \
