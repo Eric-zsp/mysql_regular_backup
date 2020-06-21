@@ -33,23 +33,21 @@
 
                             </div>
                             <div class="row">
-
                                 <div class="col-md-12 cfgs_dataTable_div" style="overflow-x:auto; ">
                                     <table class=" table table-bordered   table-hover table-responsive" style="min-width: 1120px;">
                                         <thead>
                                         <tr>
                                             <th style="text-align: center;">ID</th>
                                             <th style="text-align: center;">名称</th>
-                                            <th style="text-align: center;">数据库</th>
+                                            <th style="text-align: center;">服务器</th>
+                                            <th style="text-align: center;">备份类型</th>
                                             <th style="text-align: center;">状态</th>
                                             <th style="text-align: center;">运行</th>
                                             <th style="text-align: center;">开始时间</th>
                                             <th style="text-align: center;">最后运行</th>
+                                            <th style="text-align: center;">备份数据库</th>
+                                            <th style="text-align: center;">自定义参数</th>
                                             <th style="text-align: center;">上传协议</th>
-                                            <th style="text-align: center;">上传地址</th>
-                                            <!--<th style="text-align: center;">运行周期</th>-->
-                                            <th style="text-align: center;">完整备份周期</th>
-                                            <th style="text-align: center;">完整备份日期</th>
                                             <th style="text-align: center;">保留时长</th>
                                             <th style="text-align: center;">备注</th>
                                             <th style="text-align: center;">操作</th>
@@ -64,16 +62,15 @@
                                         <tr style="height: 30px;">
                                             <td><span class="field" field-name="p_id"></span></td>
                                             <td><span class="field" field-name="p_name"></span></td>
-                                            <td><span class="field" field-name="p_host"></span>:<span class="field" field-name="p_port"></span>;<span class="field" field-name="p_user"></span>;<span class="field" field-name="p_dbname"></span></td>
+                                            <td><span class="field" field-name="p_host"></span>:<span class="field" field-name="p_port"></span></td>                                            
+                                            <td><span class="field" field-name="p_backType"></span></td>
                                             <td><span class="field" field-name="p_state"></span></td>
                                             <td><span class="field" field-name="p_runsSate"></span></td>
                                             <td><span class="field" field-name="p_beginTime"></span></td>
                                             <td><span class="field" field-name="p_lastTime"  ></span></td>
+                                            <td><span class="field" field-name="p_dbAndTables"></span></td>
+                                            <td><span class="field" field-name="p_backupParmas"></span></td>
                                             <td><span class="field" field-name="p_remoteType"></span></td>
-                                            <td><span class="field" field-name="p_remoteStr"></span></td>
-                                            <!--<td><span class="field" field-name="p_runCorn"></span></td>-->
-                                            <td><span class="field" field-name="p_fullBackupTimeType"></span></td>
-                                            <td><span class="field" field-name="p_fullBackupTimeIndex"></span></td>
                                             <td><span class="field" field-name="p_retentionTime"  ></span></td>
                                             <td><span class="field" field-name="p_remarks"></span></td>
                                             <td>
@@ -89,8 +86,6 @@
                                 <div class="col-sm-12 ">
                                     <div class="pagination pull-right" id="device-data-pagination"></div>
                                 </div>
-
-
                             </div>
 
                         </div>
@@ -102,7 +97,7 @@
                 <div class="edit_div">
                     <div style="overflow-y: auto;overflow-x: hidden;">
                         <div class="form-horizontal">
-                            <div class="box-body" style="">
+                            <div class="box-body" >
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">
                                         名称
@@ -124,7 +119,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">
-                                        数据库地址
+                                        服务器地址
                                     </label>
                                     <div class="col-sm-10">
                                         <input type="text" data-name="p_host"  class="form-control  feild-edit" value="localhost"/>
@@ -140,14 +135,6 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">
-                                        数据库名称
-                                    </label>
-                                    <div class="col-sm-10">
-                                        <input type="text" data-name="p_dbname"  class="form-control  feild-edit" value=""/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">
                                         用户名
                                     </label>
                                     <div class="col-sm-10">
@@ -159,61 +146,31 @@
                                         密码
                                     </label>
                                     <div class="col-sm-10">
-                                        <input type="password" data-name="p_pwd"  class="form-control  feild-edit" value=""/>
+                                        <input type="password" data-name="password"  class="form-control  feild-edit" value=""/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">
-                                        上传协议
+                                        压缩备份
                                     </label>
                                     <div class="col-sm-10">
-                                        <select data-name="p_remoteType" class="form-control  feild-edit">
-                                            <option value="0" selected>无</option>
-                                            <option value="2">sftp</option>
+                                        <select data-name="p_compress" class="form-control  feild-edit">
+                                            <option value="false" >不压缩</option>
+                                            <option value="true" selected>压缩</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">
-                                        上传地址
+                                        自定义参数
                                     </label>
                                     <div class="col-sm-10">
-                                        <input type="text" data-name="p_remoteStr"  class="form-control  feild-edit" value=""/>
-                                        <p class="margin">ftp\sftp格式为：<span class="text-blue">ftp://test:test@192.168.0.1:21/profile</span>  （既 <span  class="text-blue">ftp://账号:密码@主机:端口/子目录或文件</span>）</p>
-                                    </div>
-                                </div>
-                                <!--<div class="form-group">-->
-                                    <!--<label class="col-sm-2 control-label">-->
-                                        <!--运行周期-->
-                                    <!--</label>-->
-                                    <!--<div class="col-sm-10">-->
-                                        <!--<input type="text" data-name="p_runCorn"  class="form-control  feild-edit" value="0 0 1 1/1 * ? "/>-->
-                                        <!--<p class="margin"><code class=""><a href="http://cron.qqe2.com/" target="_blank">cron表达式在线生成</a></code></p>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">
-                                        完整备份周期
-                                    </label>
-                                    <div class="col-sm-10">
-                                        <select data-name="p_fullBackupTimeType" class="form-control  feild-edit">
-                                            <option value="2" selected>周</option>
-                                            <option value="1">月</option>
-                                        </select>
+                                        <input type="text" data-name="p_backupParmas"  class="form-control  feild-edit" value=""/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">
-                                        完整备份日期
-                                    </label>
-                                    <div class="col-sm-10">
-                                        <input type="number" data-name="p_fullBackupTimeIndex"  class="form-control  feild-edit" value="1"/>
-                                        <p class="margin">（周期内） 月->第几日    周->周几</p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">
-                                        保留时长
+                                        保留时长(天)
                                     </label>
                                     <div class="col-sm-10">
                                         <input type="number" data-name="p_retentionTime"  class="form-control  feild-edit" value="14"/>
@@ -227,11 +184,181 @@
                                         <input type="text" data-name="p_remarks"  class="form-control  feild-edit" value=""/>
                                     </div>
                                 </div>
+
                                 <div class="form-group"><span class="text-red add_error_note"></span></div>
+                                
+                                <div class="form-group">
+                                    <label class="col-sm-12 text-red">
+                                        数据库配置
+                                    </label>
+                                    <table class=" table table-bordered   table-hover table-responsive dataBaseTable" style="min-width: 1120px;">
+                                        <thead>
+                                        <tr>
+                                            <th style="text-align: center;">数据库</th>
+                                            <th style="text-align: center;">指定表(不设置则备份整个库)</th>
+                                            <th style="text-align: center;">操作</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot style="display: none;">
+                                            <tr style="height: 30px;">
+                                                <td><span class="field" field-name="dbname"></span></td>
+                                                <td><span class="field" field-name="tables"  ></span></td>
+                                                <td>
+                                                    <span class="text-green update_btn"> 修改 </span> |
+                                                    <span class="text-green delete_btn"> 删除 </span>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-12 text-red">
+                                        执行计划
+                                    </label>
+                                    <table class=" table table-bordered   table-hover table-responsive BackupCornTable" style="min-width: 1120px;">
+                                        <thead>
+                                        <tr>
+                                            <th style="text-align: center;">备份方式</th>
+                                            <th style="text-align: center;">周期类型</th>
+                                            <th style="text-align: center;">周期序列</th>
+                                            <th style="text-align: center;">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot style="display: none;">
+                                            <tr style="height: 30px;">
+                                                <td><span class="field" field-name="p_backupMode"></span></td>
+                                                <td><span class="field" field-name="p_timeType"  ></span></td>
+                                                <td><span class="field" field-name="p_timeIndex"  ></span></td>
+                                                <td>
+                                                    <span class="text-green update_btn"> 修改 </span> |
+                                                    <span class="text-green delete_btn"> 删除 </span>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div class="form-group" style="display: none;">
+                                    <label class="col-sm-12 text-red">
+                                        备份文件远程存储
+                                    </label>
+                                    <table class=" table table-bordered   table-hover table-responsive remoteStoreTable" style="min-width: 1120px;">
+                                        <thead>
+                                        <tr>
+                                            <th style="text-align: center;"></th>
+                                            <th style="text-align: center;">类型</th>
+                                            <th style="text-align: center;">配置</th>
+                                            <th style="text-align: center;">操作</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot style="display: none;">
+                                            <tr style="height: 30px;">
+                                                <td><input type="checkbox" class="field"  field-name="remoteTypeCheck" /></td>
+                                                <td><span class="field" field-name="remoteType"></span></td>
+                                                <td><span class="field" field-name="remoteCfg"  ></span></td>
+                                                <td>
+                                                    <span class="text-green update_btn"> 修改 </span> |
+                                                    <span class="text-green delete_btn"> 删除 </span>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
 
+                </div>
+                <div class="dataBaseEdit">                    
+                    <div style="overflow-y: auto;overflow-x: hidden;">
+                        <div class="form-horizontal">
+                            <div class="box-body" >
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        数据库
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" data-name="dbname"  class="form-control  feild-edit" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        指定表
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" data-name="tables"  class="form-control  feild-edit" value="" placeholder="多个之间用逗号分隔,(不设置则备份整个库)"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="remoteStoreEdit">
+                    <div style="overflow-y: auto;overflow-x: hidden;">
+                        <div class="form-horizontal">
+                            <div class="box-body" >
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        远程存储类型
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" data-name="remoteType"  class="form-control  feild-edit" value=""/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        连接配置
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input type="cfg" data-name="p_host"  class="form-control  feild-edit" value="" placeholder=""/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="BackupCornEdit">
+                    <div style="overflow-y: auto;overflow-x: hidden;">
+                        <div class="form-horizontal">
+                            <div class="box-body" >
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        备份方式
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control  feild-edit"  data-name="p_backupMode"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        周期类型
+                                    </label>
+                                    <div class="col-sm-10">                           
+                                        <select class="form-control  feild-edit"  data-name="p_timeType"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        周期序列
+                                    </label>
+                                    <div class="col-sm-10">                           
+                                        <div class="select_index" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
 
@@ -257,12 +384,89 @@
         /**
          * Created by Eric.Zhang on 2017/1/7.
          */
-        var configEngeryTimesolt_operat = {
+        var backupSttingPage_operat = {
             solt_table: '',
-
+            data:{}
 
         }
-
+        backupSttingPage_operat.data.runstate={
+            valueNames:[{value:0,name:"空闲"},{value:1,name:"运行中"}],
+            getName:function (value) {
+                var result = '';
+                $(this.valueNames).each(function (i, vn) {
+                    if (vn.value == value) {
+                        result = vn.name;
+                        return false;
+                    }
+                });
+                return result;
+            }
+        }
+        backupSttingPage_operat.data.state={
+            valueNames:[{value:1,name:"正常"},{value:0,name:"停用"}],
+            getName:function (value) {
+                var result = '';
+                $(this.valueNames).each(function (i, vn) {
+                    if (vn.value == value) {
+                        result = vn.name;
+                        return false;
+                    }
+                });
+                return result;
+            }
+        }
+        backupSttingPage_operat.data.timeType={
+            valueNames:[{value:1,name:"月"},{value:2,name:"周"},{value:3,name:"日"}],
+            getName:function (value) {
+                var result = '';
+                $(this.valueNames).each(function (i, vn) {
+                    if (vn.value == value) {
+                        result = vn.name;
+                        return false;
+                    }
+                });
+                return result;
+            }
+        }
+        backupSttingPage_operat.data.backupMode={
+            valueNames:[{value:1,name:"全量备份"},{value:2,name:"增量备份"}],
+            getName:function (value) {
+                var result = '';
+                $(this.valueNames).each(function (i, vn) {
+                    if (vn.value == value) {
+                        result = vn.name;
+                        return false;
+                    }
+                });
+                return result;
+            }
+        }
+        backupSttingPage_operat.data.backType={
+            valueNames:[{value:1,name:"innobackupex24(mysql 5)"},{value:2,name:"mariadb"}],
+            getName:function (value) {
+                var result = '';
+                $(this.valueNames).each(function (i, vn) {
+                    if (vn.value == value) {
+                        result = vn.name;
+                        return false;
+                    }
+                });
+                return result;
+            }
+        }
+        backupSttingPage_operat.data.remoteType={
+            valueNames:[{value:1,name:"ftp"},{value:2,name:"sftp"},{value:3,name:"http"},{value:4,name:"百度云盘"},{value:5,name:"阿里云oss"}],
+            getName:function (value) {
+                var result = '';
+                $(this.valueNames).each(function (i, vn) {
+                    if (vn.value == value) {
+                        result = vn.name;
+                        return false;
+                    }
+                });
+                return result;
+            }
+        }
         function getList(){
             $('.cfgs_dataTable_div tbody').empty();
             $.get('/CfgApi/getBackupTaskModels',function (data) {
@@ -288,19 +492,9 @@
                         $(span).html(new Date(model[feildName]).format("yyyy-MM-dd hh:mm:ss"));
                     }
                 }else  if (feildName == "p_state") {
-                    $(span).html(model[feildName]==0?'停用':"正常");
+                    $(span).html(backupSttingPage_operat.data.state.getName(model[feildName]));
                 } else if(feildName == "p_runsSate"){
-                    $(span).html(model[feildName]==0?'空闲':"运行中");
-                }else if(feildName == "p_fullBackupTimeType"){
-                    $(span).html(model[feildName]==1?'月':"周");
-                }else if(feildName == "p_remoteType"){
-                    switch ($(span).html(model[feildName])){
-                        case 0:$(span).html('不上传');break;
-                        case 1:$(span).html('ftp');break;
-                        case 2:$(span).html('sftp');break;
-                        case 3:$(span).html('http');break;
-                        case 4:$(span).html('百度云盘');break;
-                    }
+                    $(span).html(backupSttingPage_operat.data.runstate.getName(model[feildName]));
                 }else {
                     $(span).html(model[feildName]);
                 }
@@ -329,7 +523,7 @@
                 var _model = JSON.parse(JSON.stringify(model));
                 _model.p_id='';
                 _model.p_name='';
-                _model.p_dbname='';
+                _model.p_dbAndTables=[];
                 addOrUpdate(_model,null);
             });
             $(tr).find(".edit_btn").unbind("click").click(function () {
@@ -372,86 +566,122 @@
                 model = {p_runsSate: '0'};
             }else{
                 $(diaElement).find(".feild-edit").each(function (i, ele) {
-                    $(ele).val(model[$(ele).attr("data-name")]);
+                    var dataName=$(ele).attr("data-name")
+                    if(dataName=='p_compress'){
+                        $(ele).val(model[dataName]+'');
+                    }else{
+                        $(ele).val(model[dataName]);
+                    }
                 });
-
+                if(model.p_dbAndTables){
+                    $.each(model.p_dbAndTables,function(db,value){
+                        showDataBaseModel(null,{"dbName":db,tables:value});
+                    })
+                    
+                }
+                if(model.p_backupCorns){
+                    $.each(model.p_backupCorns,function(i,cornObj){
+                        showBackupCornModel(null,cornObj);
+                    })
+             
+                }
             }
-
+            var width = $(window).width();
+            width = width - 250;
+            if (width < 100) {
+                width = 100;
+            }
+       
             var d = dialog({
                 title: title ,
                 content: diaElement,
-                width: '40em',
+                width: width+'px',
+                button:[
+                    {
+                        value: '添加数据库',
+                        callback: function () {
+                            editDataBaseModel(null,null)
+                            return false;
+                        }
+                    },
+                    {
+                        value: '添加执行计划',
+                        callback: function () {
+                            editBackupCornModel(null,null)
+                            return false;
+                        }
+                    }
+                ],
                 okValue: title,
                 ok: function () {
+                    var postObj=JSON.parse(JSON.stringify(model));
                     $(diaElement).find(".feild-edit").each(function (i, ele) {
-                            model[$(ele).attr("data-name")] = $(ele).val();
+                        postObj[$(ele).attr("data-name")] = $(ele).val();
+                    })
+                    postObj.p_backupCorns=[];
+                    postObj.p_dbAndTables={};
+                    postObj.p_remoteType=[];
+                    postObj.p_remoteCfg={};
+                    $(diaElement).find('.dataBaseTable tbody tr').each(function(i,tr){
+                        var dbName = $(tr).find('.field[field-name="dbname"]').text();
+                        if(dbName){
+                            postObj.p_dbAndTables[dbName]=[];
+                            var tables=$(tr).find('.field[field-name="tables"]').text();
+                            if(tables){
+                                $(tables.split(',')).each(function(j,table){
+                                    if(table){                                        
+                                        postObj.p_dbAndTables[dbName].push(table);
+                                    }
+                                })
+                            }
+                        }
+                    })
+                    $(diaElement).find('.BackupCornTable tbody tr').each(function(i,tr){
+
+                        var p_backupMode = $(tr).find('.field[field-name="p_backupMode"]').attr("value");
+                        var p_timeType = $(tr).find('.field[field-name="p_timeType"]').attr("value");
+                        var p_timeIndex=[];
+                        $(tr).find('.field[field-name="p_timeIndex"] .timeIndex').each(function(j,span){
+                            p_timeIndex.push($(span).attr("value"))
+                        })
+                        postObj.p_backupCorns.push({
+                            p_backupMode:p_backupMode,
+                            p_timeType:p_timeType,
+                            p_timeIndex:p_timeIndex
+                        })
+                    })
+                    $(diaElement).find('.remoteStoreTable tbody tr').each(function(i,tr){
 
                     })
-
-                    if (model.p_name.trim()=="") {
+                    if (postObj.p_name.trim()=="") {
                         dialog({
                             content: '请填写名称',
                             quickClose: true,
                         }).show();
                         return false;
                     }
-                    if (model.p_host.trim()=="") {
+                    if (postObj.p_host.trim()=="") {
                         dialog({
                             content: '请填写数据库连接',
                             quickClose: true,
                         }).show();
                         return false;
                     }
-                    if (model.p_port.trim()=="") {
+                    if (postObj.p_port.trim()=="") {
                         dialog({
                             content: '请填写数据库端口',
                             quickClose: true,
                         }).show();
                         return false;
                     }
-                    if (model.p_dbname.trim()=="") {
-                        dialog({
-                            content: '请填写数据库名称',
-                            quickClose: true,
-                        }).show();
-                        return false;
-                    }
-                    if (model.p_user.trim()=="") {
+                    if (postObj.p_user.trim()=="") {
                         dialog({
                             content: '请填写数据库连接用户',
                             quickClose: true,
                         }).show();
                         return false;
                     }
-                    if (model.p_pwd.trim()=="") {
-                        dialog({
-                            content: '请填写数据库连接密码',
-                            quickClose: true,
-                        }).show();
-                        return false;
-                    }
-                    if (model.p_remoteType>0&&model.p_remoteStr.trim()=="") {
-                        dialog({
-                            content: '请填写远程服务器地址',
-                            quickClose: true,
-                        }).show();
-                        return false;
-                    }
-                    // if (model.p_runCorn.trim()=="") {
-                    //     dialog({
-                    //         content: '请填写运行周期',
-                    //         quickClose: true,
-                    //     }).show();
-                    //     return false;
-                    // }
-                    if (model.p_fullBackupTimeIndex.trim()=="") {
-                        dialog({
-                            content: '完整备份执行日期',
-                            quickClose: true,
-                        }).show();
-                        return false;
-                    }
-                    if (model.p_retentionTime.trim()=="") {
+                    if (postObj.p_retentionTime.trim()=="") {
                         dialog({
                             content: '请填写备份文件保留时间',
                             quickClose: true,
@@ -463,7 +693,8 @@
                     var url =  "/CfgApi/setBackupTaskModel" ;
                     $.ajax({
                         url: url,
-                        data: model,
+                        data: JSON.stringify( postObj ),
+                        contentType:"application/json",
                         type: 'post',
                         cache: false,
                         success: function (txt) {
@@ -493,11 +724,136 @@
                 cancelValue: "取消"
             }).showModal();
 
+            function showDataBaseModel(tr,obj){
+                if(!tr){
+                    tr=$($(diaElement).find('.dataBaseTable tfoot').html())
+                    $(diaElement).find('.dataBaseTable tbody').append(tr);
+                }
+                tr.find('.field[field-name="dbname"]').html(obj.dbName);
+                tr.find('.field[field-name="tables"]').html(obj.tables.join(','));
+                $(tr).find('.delete_btn').click(function(){
+                    $(tr).remove();
+                })
+                $(tr).find('.update_btn').click(function(){
+                    editDataBaseModel(tr,obj);
+                })
+            }
+            function editDataBaseModel(tr,obj){
+                var isAdd = obj?false:true;
+                var diaDiv = $($('.dataBaseEdit').html());
+                var dd = dialog({
+                    title: isAdd?"添加":"修改" ,
+                    content: diaDiv,
+                    width: '40em',
+                    okValue: isAdd?"添加":"修改",
+                    ok: function () {
+                        showDataBaseModel(tr,{"dbName":diaDiv.find('.feild-edit[data-name="dbname"]').val(),"tables":diaDiv.find('.feild-edit[data-name="tables"]').val().split(',')})
+                    },
+                    cancel: true,
+                    cancelValue: "取消"
+                });
+                dd.showModal();
+                if(obj){
+                    diaDiv.find('.feild-edit[data-name="dbname"]').val(obj.dbName);
+                    diaDiv.find('.feild-edit[data-name="tables"]').val(obj.tables.join(','));
+                }
 
+            }
+            function showBackupCornModel(tr,obj){
+                if(!tr){
+                    tr=$($(diaElement).find('.BackupCornTable tfoot').html())
+                    $(diaElement).find('.BackupCornTable tbody').append(tr);
+                }
+                $(tr).find('.field').each(function(i,span){
+                    var fieldName=$(span).attr('field-name');
+                    if(fieldName=='p_backupMode'){
+                        $(span).html(backupSttingPage_operat.data.backupMode.getName(obj[fieldName])).attr("value",obj[fieldName]);
+                    }
+                    if(fieldName=='p_timeType'){
+                        $(span).html(backupSttingPage_operat.data.timeType.getName(obj[fieldName])).attr("value",obj[fieldName]);
+                    }
+                    if(fieldName=='p_timeIndex'){
+                        if(obj[fieldName]){
+                            $(obj[fieldName]).each(function(j,timeIndex){
+                                if(obj["p_timeType"]==1){
+                                    $(span).append('<span class="timeIndex margin" value="'+timeIndex+'">'+timeIndex+'日</span>');
+                                }else  if(obj["p_timeType"]==2){
+                                    $(span).append('<span class="timeIndex margin" value="'+timeIndex+'">周'+(timeIndex==7?'日':timeIndex)+'</span>');
+                                }else  if(obj["p_timeType"]==3){
+                                    $(span).append('<span class="timeIndex margin" value="'+timeIndex+'">'+timeIndex+'时</span>');
+                                }
+                            })
+                            
+                        }
+                        
+                    }
+                })
+                $(tr).find('.delete_btn').click(function(){
+                    $(tr).remove();
+                })
+                $(tr).find('.update_btn').click(function(){
+                    BackupCornEdit(tr,obj);
+                })
+            }
+            function editBackupCornModel(tr,obj){
+                var diaDiv = $($('.BackupCornEdit').html());
+                $(backupSttingPage_operat.data.timeType.valueNames).each(function(i,timeType){
+                    diaDiv.find('.feild-edit[data-name="p_timeType"]').append('<option value="'+timeType.value+'" '+(i==0?'selected':'')+'>'+timeType.name+'</option>')
+                    var div = $('<div class="select_index_checks" timeType="'+timeType.value+'" ></div>')
+                    diaDiv.find('.select_index').append(div);
+                    if(timeType.value==1){                        
+                        for(var a=1;a<32;a++){
+                            div.append('<label class="margin"><input type="checkbox" value="'+a+'">'+a+'日</label>')
+                        }
+                    }else if(timeType.value==2){                        
+                        for(var a=1;a<8;a++){
+                            div.append('<label class="margin"><input type="checkbox" value="'+a+'">周'+(a==7?"日":a)+'</label>')
+                        }
+                    }else if(timeType.value==3){                        
+                        for(var a=0;a<24;a++){
+                            div.append('<label class="margin"><input type="checkbox" value="'+a+'">'+a+'时</label>')
+                        }
+                    }
+                })
+                $(backupSttingPage_operat.data.backupMode.valueNames).each(function(i,backupMode){
+                    diaDiv.find('.feild-edit[data-name="p_backupMode"]').append('<option value="'+backupMode.value+'" '+(i==0?'selected':'')+'>'+backupMode.name+'</option>')
+                   
+                })
+                diaDiv.find('.feild-edit[data-name="p_timeType"]').change(function(){
+                    timeTypechange(diaDiv.find('.feild-edit[data-name="p_timeType"]').val());
+                })
+                if(obj){
+                    diaDiv.find('.feild-edit[data-name="p_timeType"]').val( obj.p_timeType);
+                    diaDiv.find('.feild-edit[data-name="p_backupMode"]').val(obj.p_backupMode);
+                }
+                timeTypechange(diaDiv.find('.feild-edit[data-name="p_timeType"]').val())
+                var dd = dialog({
+                    title: isAdd?"添加":"修改" ,
+                    content: diaDiv,
+                    width: '40em',
+                    okValue: isAdd?"添加":"修改",
+                    ok: function () {
+                        if(!obj){
+                            obj={}
+                        }
+                        obj.p_timeType = diaDiv.find('.feild-edit[data-name="p_timeType"]').val();
+                        obj.p_backupMode = diaDiv.find('.feild-edit[data-name="p_backupMode"]').val();
+                        obj.p_timeIndex=[];
+                        diaDiv.find('.select_index .select_index_checks[timeType="'+obj.p_timeType+'"] input:checked').each(function(j,input){
+                            obj.p_timeIndex.push($(input).val());
+                        });
+                        showBackupCornModel(tr,obj)
+                    },
+                    cancel: true,
+                    cancelValue: "取消"
+                });
+                dd.showModal();
+                function timeTypechange(value){
+                    diaDiv.find('.select_index .select_index_checks[timeType="'+value+'"]').show().siblings().hide();
+                }
+            }
         }
         $(function () {
-            //initFixedTable();
-
             getList();
         });
     </script>

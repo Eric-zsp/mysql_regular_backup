@@ -4,6 +4,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,9 @@ import cn.joyconn.tools.mysqlbackup.task.utils.AESUtils;
 import cn.joyconn.tools.mysqlbackup.task.web.config.CustomMillSecondsDateEditor;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -36,14 +40,23 @@ public class CfgApi {
         return globleCfg.getBackupTaskModels();
     }
     @RequestMapping(value = "setBackupTaskModel", method = RequestMethod.POST)
-    BackupTaskModel setBackupTaskModel(PostBackupTaskModel model,HttpServletRequest request) throws IOException {
+    BackupTaskModel setBackupTaskModel(@RequestBody PostBackupTaskModel model,HttpServletRequest request) throws IOException {
+        BackupTaskModel saveModel=null;
         if(Strings.isNotBlank(model.getPassword())){
-            try{
-                 model.setP_pwd( AESUtils.decryptStr(model.getP_pwd(),globleCfg.getDbEnKey()));
+            try{               
+                model.setP_pwd( AESUtils.encryptStr(model.getPassword(),globleCfg.getDbEnKey()));                
             }catch (Exception ex){
             }
         }
-        return  globleCfg.setBackupTaskModel(model);
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            saveModel=objectMapper.readValue(objectMapper.writeValueAsString(model), BackupTaskModel.class);           
+        }catch (Exception ex){
+        }       
+        if(saveModel==null){
+            return null;
+        }
+        return  globleCfg.setBackupTaskModel(saveModel);
     }
     @RequestMapping(value = "removeBackupTaskModel", method = RequestMethod.POST)
     void removeBackupTaskModel(String id,HttpServletRequest request) throws IOException {

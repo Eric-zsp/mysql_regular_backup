@@ -28,7 +28,7 @@ public class BackupTaskModel {
     private Integer p_port;
 
     /**
-     * 备份方式 1:innobackupex(mysql 5) 2:mariadb
+     * 备份类型 1:innobackupex24(mysql 5) 2:mariadb
      */
     private Integer p_backType;
     /**
@@ -57,7 +57,10 @@ public class BackupTaskModel {
      * 运行状态 0空闲 1运行中
      */
     private int p_runsSate;
-
+    /**
+     * 压缩备份
+     */
+    private boolean p_compress;
     /**
      * 开始时间 如果处于空闲状态则会和最后一次运行时间一致
      */
@@ -70,7 +73,7 @@ public class BackupTaskModel {
     /**
      * 备份执行计划
      */
-    private List<BackupCorn> backupCorns;
+    private List<BackupCorn> p_backupCorns;
 
     
 
@@ -82,7 +85,7 @@ public class BackupTaskModel {
 
 
       /**
-     * 备份文件远程存储类型 0本地存储 1sftp 2http 3百度云盘 4阿里云oss （暂时仅支持0,2）
+     * 备份文件远程存储类型  1sftp 2http 3百度云盘 4阿里云oss （暂时仅支持0,2）
      */
     private List<Integer> p_remoteType;
     /**
@@ -127,7 +130,7 @@ public class BackupTaskModel {
         this.p_port = p_port;
     }
 
-    @ApiModelProperty("备份方式 1:innobackupex(mysql 5) 2:mariadb")
+    @ApiModelProperty("备份方式 1:innobackupex24(mysql 5) 2:mariadb")
     public Integer getP_backType() {
         return p_backType;
     }
@@ -200,12 +203,12 @@ public class BackupTaskModel {
     }
 
     @ApiModelProperty("备份执行计划")
-    public List<BackupCorn> getBackupCorns() {
-        return backupCorns;
+    public List<BackupCorn> getP_backupCorns() {
+        return p_backupCorns;
     }
 
-    public void setBackupCorns(List<BackupCorn> backupCorns) {
-        this.backupCorns = backupCorns;
+    public void setP_backupCorns(List<BackupCorn> p_backupCorns) {
+        this.p_backupCorns = p_backupCorns;
     }
 
     @ApiModelProperty("备注")
@@ -226,7 +229,7 @@ public class BackupTaskModel {
         this.p_retentionTime = p_retentionTime;
     }
 
-    @ApiModelProperty("备份文件远程存储类型 0本地存储 1ftp  2sftp  3http 4百度云盘 5阿里云oss （暂时仅支持0,2）")
+    @ApiModelProperty("备份文件远程存储类型  1ftp  2sftp  3http 4百度云盘 5阿里云oss （暂时仅支持0,2）")
     public List<Integer> getP_remoteType() {
         return p_remoteType;
     }
@@ -251,6 +254,16 @@ public class BackupTaskModel {
 
     public void setP_backupParmas(String p_backupParmas) {
         this.p_backupParmas = p_backupParmas;
+    }
+
+    
+    @ApiModelProperty("是否压缩备份")
+    public boolean isP_compress() {
+        return p_compress;
+    }
+
+    public void setP_compress(boolean p_compress) {
+        this.p_compress = p_compress;
     }
 
 

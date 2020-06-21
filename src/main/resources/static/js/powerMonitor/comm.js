@@ -477,7 +477,7 @@ function timeStampToFormatString(second_time) {
 
 function initUserGroupCDSelect(containers,CompanyCD,select_groupcd){
     $.get("/api/ManageApi/UserManageApi/selectGroupCDByParam",{CompanyCD:CompanyCD},function (data) {
-        if (mortise_layout.ValidataResult(data)) {
+        if (joyconn_layout.ValidataResult(data)) {
             if (data.result) {
                 $(data.result).each(function (index,groupcd) {
                     $(containers).each(function(a,container){
@@ -503,7 +503,7 @@ function getCO2FromEnergy(energy) {
 function getUsers(uids,callback){
     if(uids&&uids.length>0){
         $.get("/api/UserApi/getUsers",{uids:uids},function(data){
-            if (mortise_layout.ValidataResult(data)) {
+            if (joyconn_layout.ValidataResult(data)) {
                 if (data.result) {
                     if(callback){
                         callback(data.result);
@@ -517,7 +517,7 @@ function getUsers(uids,callback){
 //根据用户ID数组获取用户信息
 function getCompanyUsers(CompanyCD,callback){
     $.get("/api/UserApi/selectUsersByParam",{CompanyCD:CompanyCD,pageIndex:1,pageSize:1000000},function(data){
-        if (mortise_layout.ValidataResult(data)) {
+        if (joyconn_layout.ValidataResult(data)) {
             if (data.result) {
                 if(callback){
                     callback(data.result);
@@ -530,7 +530,7 @@ function getCompanyUsers(CompanyCD,callback){
 var globle_compay_project_room_data={companys:null,peojects:{},roomcs:{}};
 function getMyCompanys(callback) {
     $.get("/api/ConfigApi/CompanyApi/getMyCompanyList",{},function(data){
-        if (mortise_layout.ValidataResult(data)) {
+        if (joyconn_layout.ValidataResult(data)) {
             if (data.result) {
                 if(callback){
                     callback(data.result);
@@ -545,7 +545,7 @@ function getMyCompanys(callback) {
 }
 function getMyProjects(companycd,callback) {
     $.get("/api/ConfigApi/ProjectApi/getMyLevelProjectList",{companyCD:companycd},function(data){
-        if (mortise_layout.ValidataResult(data)) {
+        if (joyconn_layout.ValidataResult(data)) {
             if (data.result) {
                 if(callback){
                     callback(data.result);
@@ -561,7 +561,7 @@ function getMyProjects(companycd,callback) {
 }
 function getMyRoomsByProjectCD(companycd,projectcd,callback) {
     $.get("/api/ConfigApi/RoomApi/getMyLvlRoomListByProjectCD",{companyCD:companycd,projectCD:projectcd},function(data){
-        if (mortise_layout.ValidataResult(data)) {
+        if (joyconn_layout.ValidataResult(data)) {
             if (data.result) {
                 if(callback){
                     callback(data.result);

@@ -6,18 +6,21 @@ import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
 import cn.joyconn.tools.mysqlbackup.task.utils.AESUtils;
 import cn.joyconn.tools.mysqlbackup.task.utils.LogHelper;
 import cn.joyconn.tools.mysqlbackup.task.utils.dump.MariadbDumpTool;
-import cn.joyconn.tools.mysqlbackup.task.utils.dump.MysqlDumpTool;
 import cn.joyconn.tools.mysqlbackup.task.utils.dump.XtraBackupDumpTool;
 import cn.joyconn.tools.mysqlbackup.task.utils.SFTPUtil;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -36,8 +39,8 @@ public class BackupAndUpload {
             if(backupTaskModel.getP_state()==0){
                 return;
             }
-            if(backupTaskModel.getBackupCorns()!=null){
-                for(BackupCorn backupCorn:backupTaskModel.getBackupCorns()){
+            if(backupTaskModel.getP_backupCorns()!=null){
+                for(BackupCorn backupCorn:backupTaskModel.getP_backupCorns()){
                     if(backupCorn.getP_timeType()==1){
                         dayIndex = now.get(Calendar.DAY_OF_MONTH);
                     }else  if(backupCorn.getP_timeType()==2){
@@ -45,14 +48,21 @@ public class BackupAndUpload {
                     }else{
                         dayIndex = now.get(Calendar.HOUR_OF_DAY);
                     }
-
-                    if(dayIndex==backupCorn.getP_timeIndex()){
-                        toback = true;//需要执行备份操作
-                        if(backupCorn.getP_backupType()==1){
-                            fullback=true;//全量备份
-                            break;
+                    if(backupCorn.getP_timeIndex()!=null&&backupCorn.getP_timeIndex().size()>0){
+                        for(Integer timeIndex :backupCorn.getP_timeIndex()){
+                            if(dayIndex==timeIndex){
+                                toback = true;//需要执行备份操作
+                                if(backupCorn.getP_backupMode()==1){
+                                    fullback=true;//全量备份
+                                    break;
+                                }
+                            }
                         }
                     }
+                    if(fullback){
+                        break;
+                    }
+                    
                 }
             }
             
@@ -83,16 +93,16 @@ public class BackupAndUpload {
         }        
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String dateTimeStr = dateFormat.format(new Date());
-        String fileName ="";
+        String saveName ="";
         
         for(String dbName:backupTaskModel.getP_dbAndTables().keySet()){
-            String saveDir = GlobleImpl.getGlobleCfgStatic().getSavepath() + File.separator+backupTaskModel.getP_id() + File.separator+dateTimeStr.substring(0,10)+ File.separator+dbName+ File.separator;
-            File saveFile = new File(saveDir);
-            saveDir = saveFile.getAbsolutePath();
-            if (!saveDir.endsWith(File.separator)) {
-                saveDir = saveDir + File.separator;
+            String saveBaseDir = GlobleImpl.getGlobleCfgStatic().getSavepath() + File.separator+backupTaskModel.getP_id() +dbName+ File.separator;
+            File saveFile = new File(saveBaseDir);
+            saveBaseDir = saveFile.getAbsolutePath();
+            if (!saveBaseDir.endsWith(File.separator)) {
+                saveBaseDir = saveBaseDir + File.separator;
             }            
-            fileName = dbName + (fullback?"-full":"-increment") + "-" +  dateTimeStr + "-"  + backupTaskModel.getP_id() + ".sql.gz";
+            saveName = dbName + (fullback?"-full":"-increment") + "-" +  dateTimeStr;
             String dbPWD = "";
             try{
                 dbPWD = AESUtils.decryptStr(backupTaskModel.getP_pwd(),GlobleImpl.getGlobleCfgStatic().getDbEnKey());
@@ -106,10 +116,12 @@ public class BackupAndUpload {
                                 backupTaskModel.getP_port().toString(),
                                 backupTaskModel.getP_user(),
                                 dbPWD,
-                                saveDir,
-                                fileName,
+                                saveBaseDir+saveName,
                                 dbName,
-                                backupTaskModel.getP_dbAndTables().get(dbName)                           
+                                backupTaskModel.getP_dbAndTables().get(dbName),
+                                backupTaskModel.isP_compress(),
+                                getLastFullBackupDir(saveBaseDir),
+                                backupTaskModel.getP_backupParmas()                         
                                 );
                             break;
                     case 2:MariadbDumpTool.backup(
@@ -117,10 +129,12 @@ public class BackupAndUpload {
                             backupTaskModel.getP_port().toString(),
                             backupTaskModel.getP_user(),
                             dbPWD,
-                            saveDir,
-                            fileName,
+                            saveBaseDir+saveName,
                             dbName,
-                            backupTaskModel.getP_dbAndTables().get(dbName)
+                            backupTaskModel.getP_dbAndTables().get(dbName),
+                            backupTaskModel.isP_compress(),
+                            getLastFullBackupDir(saveBaseDir),
+                            backupTaskModel.getP_backupParmas()
                         );
                         break;
                 }
@@ -131,11 +145,30 @@ public class BackupAndUpload {
                 for(Integer remoteType:backupTaskModel.getP_remoteType()){
                     if(remoteType>0 && backupTaskModel.getP_remoteCfg().containsKey(remoteType)){
                         if(remoteType==1){
-                            uploadSftp(backupTaskModel.getP_remoteCfg().get(remoteType),
+                            String tempFileName = saveName+"" +backupTaskModel.getP_id()+".gz";
+                            String cmd = "tar -zcvf "+ saveBaseDir + tempFileName + " " + saveBaseDir+saveName;
+                            try {
+                                Process process = Runtime.getRuntime().exec(cmd);
+                                int processResult = process.waitFor();
+                                 if (processResult == 0) {// 0 表示线程正常终止。
+                                     LogHelper.logger().info("数据库压缩 "+cmd+"完成");
+                                 }
+                             } catch (IOException e) {
+                                LogHelper.logger().info("数据库压缩 "+cmd+"异常1;"+e.getMessage());
+                             } catch (InterruptedException e) {
+                                LogHelper.logger().info("数据库压缩 "+cmd+"异常2;"+e.getMessage());
+                             }
+                             
+                             File file = new File(tempFileName);
+                             if(file.exists()){
+                                uploadSftp(backupTaskModel.getP_remoteCfg().get(remoteType),
                                     dbName + File.separator + dateTimeStr.substring(0,8) + File.separator + backupTaskModel.getP_id() + File.separator,
-                                    fileName,
-                                    saveDir + File.separator + fileName
+                                    tempFileName,
+                                    saveBaseDir + File.separator + tempFileName
                                 );
+                                file.delete();
+                             }
+                            
                         }
                         
             
@@ -146,7 +179,27 @@ public class BackupAndUpload {
         
 
     }
-
+    private static String getLastFullBackupDir(String baseDir){
+        File folder = new File(baseDir);
+        File[] subFolders = folder.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                if (file.isDirectory() && file.getName().toLowerCase().contains("-full-")) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        if(subFolders!=null&&subFolders.length>0){
+            List<File> fullDirs = Lists.newArrayList(subFolders);
+            fullDirs.sort((c1,c2)->{
+                return c1.getName().compareTo(c2.getName());
+            });
+            return fullDirs.get(0).getAbsolutePath();
+        }
+        return "";
+        
+    }
     /**
      * sftp 上传
      * @param cfg  sftp连接配置 -> {host:'',user:'',pwd:'',port:1 , targetDir:'' }

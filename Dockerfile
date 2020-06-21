@@ -23,11 +23,12 @@ RUN echo "Install Percona XtraBackup" && \
     rm -f percona-xtrabackup-24_2.4.20-1.bionic_amd64.deb && \
     apt-get update && \
     apt-get install -y percona-xtrabackup-24   
+RUN apt-get install -y perl-Digest-MD5
 
 
 #暴露给容器外的端口: http mysql
 EXPOSE 8080 3306
 
 #执行的命令
-CMD  ["java -jar -Duser.timezone=GMT+08 /workbasedir/backup-app/mysql_regular_backup-1.0-SNAPSHOT.jar"]   
+CMD  ["java -jar -Duser.timezone=GMT+08 /data/backup-app/mysql_regular_backup-1.0-SNAPSHOT.jar"]   
 
