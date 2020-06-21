@@ -28,5 +28,5 @@ RUN echo "Install Percona XtraBackup" && \
 EXPOSE 8019 3306
 
 #执行的命令
-# CMD  ["/usr/lib/jvm/java-8-openjdk-amd64/bin/java -Duser.timezone=GMT+08 -jar /data/backup-app/mysql_regular_backup-1.0-SNAPSHOT.jar"]   
+ CMD  /usr/lib/jvm/java-8-openjdk-amd64/bin/java -Duser.timezone=GMT+08 -jar /data/backup-app/mysql_regular_backup-1.0-SNAPSHOT.jar  
 
