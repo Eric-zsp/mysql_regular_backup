@@ -1,7 +1,7 @@
 FROM mariadb:10.4.8
 
 #指定作者
-MAINTAINER  Eric
+MAINTAINER Eric
 
 VOLUME [ "/etc/mysql", "/var/lib/mysql","/data"]
 RUN mkdir -p /data
@@ -28,5 +28,5 @@ RUN echo "Install Percona XtraBackup" && \
 EXPOSE 8080 3306
 
 #执行的命令
-CMD  ["java -jar -Duser.timezone=GMT+08 /data/backup-app/mysql_regular_backup-1.0-SNAPSHOT.jar"]   
+# CMD  ["java -jar -Duser.timezone=GMT+08 /data/backup-app/mysql_regular_backup-1.0-SNAPSHOT.jar"]   
 
