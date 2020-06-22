@@ -1,9 +1,11 @@
-FROM mariadb:10.4.8
+# FROM mariadb:10.4.8
+FROM  ubuntu:focal
 
 #指定作者
 MAINTAINER Eric
 
-VOLUME [ "/etc/mysql", "/var/lib/mysql","/data"]
+# VOLUME [ "/etc/mysql", "/var/lib/mysql","/data"]
+VOLUME ["/data"]
 RUN mkdir -p /data
 #文件到镜像中
 COPY  file/*  /data/

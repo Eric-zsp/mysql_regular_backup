@@ -22,8 +22,11 @@ public class XtraBackupDumpTool {
         //     savePath = savePath + File.separator;
         // }
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("innobackupex  ").append(" --host").append(hostIP).append(" --port=").append(port)
-                    .append(" --no-timestamp --socket=/var/lib/mysql/mysql.sock");
+        stringBuilder.append("innobackupex  ").append(" --defaults-file=/etc/mysql/my.cnf").append(" --host=").append(hostIP).append(" --port=").append(port)
+                    .append(" --no-timestamp ");
+        stringBuilder.append(" --backup --no-lock");
+        // stringBuilder.append(" --socket=/var/lib/mysql/mysql.sock");
+        
         stringBuilder.append(" --user=").append(userName).append(" --password=").append(password);
         if(compress){
             stringBuilder.append(" --compress ");
@@ -45,6 +48,7 @@ public class XtraBackupDumpTool {
         }
         stringBuilder.append(" ").append(savePath);
         try {
+            LogHelper.logger().info("开始执行:"+stringBuilder.toString());
            Process process = Runtime.getRuntime().exec(stringBuilder.toString());
            int processResult = process.waitFor();
             if (processResult == 0) {// 0 表示线程正常终止。

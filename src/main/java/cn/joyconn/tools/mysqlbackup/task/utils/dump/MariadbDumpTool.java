@@ -20,28 +20,33 @@ public class MariadbDumpTool {
         //     savePath = savePath + File.separator;
         // }
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("mariabackup  ").append(" --host").append(hostIP).append(" --port=").append(port)
-                    .append(" --no-timestamp --socket=/var/lib/mysql/mysql.sock");
-        stringBuilder.append(" --user=").append(userName).append(" --password=").append(password);
+        // stringBuilder.append("mariabackup  ").append(" --host").append(hostIP).append(" --port=").append(port)
+        //             .append(" --no-timestamp --socket=/var/lib/mysql/mysql.sock");
+                    
+        stringBuilder.append("mariabackup  --defaults-file=/etc/mysql/my.cnf").append(" --host ").append(hostIP).append(" --port ").append(port)
+            .append(" --no-timestamp");
+        // stringBuilder.append(" --socket=/var/lib/mysql/mysql.sock");
+        stringBuilder.append(" --backup --no-lock");
+        stringBuilder.append(" --user ").append(userName).append(" --password ").append(password);
         if(compress){
             stringBuilder.append(" --compress ");
         }
         if(Strings.isNotBlank(incrementalBasedir)){            
-            stringBuilder.append(" --incremental --incremental-basedir=").append(incrementalBasedir);
+            stringBuilder.append(" --incremental --incremental-basedir ").append(incrementalBasedir);
         }
         if(tables!=null&&tables.size()>0){
-            stringBuilder.append(" --databases=\"");
+            stringBuilder.append(" --databases \"");
             for(String table:tables){
                 stringBuilder.append(databaseName).append(".").append(table).append(" ");
             }
             stringBuilder.append("\"");
         }else{
-            stringBuilder.append(" --databases=\"").append(databaseName).append("\"");
+            stringBuilder.append(" --databases \"").append(databaseName).append("\"");
         }
         if(Strings.isNotBlank(extParams)){
             stringBuilder.append(" ").append(extParams);
         }
-        stringBuilder.append(" ").append(savePath);
+        stringBuilder.append(" --target-dir ").append(savePath);
         try {
            Process process = Runtime.getRuntime().exec(stringBuilder.toString());
            int processResult = process.waitFor();

@@ -96,7 +96,7 @@ public class BackupAndUpload {
         String saveName ="";
         
         for(String dbName:backupTaskModel.getP_dbAndTables().keySet()){
-            String saveBaseDir = GlobleImpl.getGlobleCfgStatic().getSavepath() + File.separator+backupTaskModel.getP_id() +dbName+ File.separator;
+            String saveBaseDir = GlobleImpl.getGlobleCfgStatic().getSavepath() + File.separator+backupTaskModel.getP_id()+"-" +dbName+ File.separator;
             File saveFile = new File(saveBaseDir);
             saveBaseDir = saveFile.getAbsolutePath();
             if (!saveBaseDir.endsWith(File.separator)) {
@@ -120,7 +120,7 @@ public class BackupAndUpload {
                                 dbName,
                                 backupTaskModel.getP_dbAndTables().get(dbName),
                                 backupTaskModel.isP_compress(),
-                                getLastFullBackupDir(saveBaseDir),
+                                fullback?"":getLastFullBackupDir(saveBaseDir),
                                 backupTaskModel.getP_backupParmas()                         
                                 );
                             break;
@@ -133,7 +133,7 @@ public class BackupAndUpload {
                             dbName,
                             backupTaskModel.getP_dbAndTables().get(dbName),
                             backupTaskModel.isP_compress(),
-                            getLastFullBackupDir(saveBaseDir),
+                            fullback?"":getLastFullBackupDir(saveBaseDir),
                             backupTaskModel.getP_backupParmas()
                         );
                         break;
