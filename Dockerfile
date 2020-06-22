@@ -1,5 +1,5 @@
-# FROM mariadb:10.4.8
-FROM  ubuntu:focal
+FROM mariadb:10.4.8
+#FROM  ubuntu:focal
 
 #指定作者
 MAINTAINER Eric
