@@ -214,6 +214,6 @@ $(function () {
 
     // $(".homework-sysconfig-logo-name").html("<b>洗车</b>平台");
     // $(".homework-sysconfig-logo-mini-name").html("洗车");
-    $(".homework-sysconfig-name").html("洗车平台");
-    $("title").html($("title").html() + "洗车平台");
+    $(".homework-sysconfig-name").html("数据库备份");
+    $("title").html($("title").html() + "数据库备份");
 })

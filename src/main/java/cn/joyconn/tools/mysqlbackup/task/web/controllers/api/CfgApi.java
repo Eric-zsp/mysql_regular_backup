@@ -71,6 +71,6 @@ public class CfgApi {
     @RequestMapping(value = "runBackupTaskModel", method = RequestMethod.POST)
     void runBackupTaskModel(String id,HttpServletRequest request) throws IOException {
         BackupTaskModel backupTaskModel = globleCfg.getBackupTaskModel(id);
-        BackupAndUpload.dowork(backupTaskModel,true);
+        BackupAndUpload.dowork(backupTaskModel);
     }
 }

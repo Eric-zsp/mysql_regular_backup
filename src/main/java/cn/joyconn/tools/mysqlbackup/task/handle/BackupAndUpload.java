@@ -6,6 +6,7 @@ import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
 import cn.joyconn.tools.mysqlbackup.task.utils.AESUtils;
 import cn.joyconn.tools.mysqlbackup.task.utils.LogHelper;
 import cn.joyconn.tools.mysqlbackup.task.utils.dump.MariadbDumpTool;
+import cn.joyconn.tools.mysqlbackup.task.utils.dump.MysqlDumpTool;
 import cn.joyconn.tools.mysqlbackup.task.utils.dump.XtraBackupDumpTool;
 import cn.joyconn.tools.mysqlbackup.task.utils.SFTPUtil;
 
@@ -28,61 +29,18 @@ public class BackupAndUpload {
     /**
      *
      * @param backupTaskModel 备份设置对象
-     * @param forceFullback 强制完整备份
      */
-    public static void dowork(BackupTaskModel backupTaskModel,boolean forceFullback){
+    public static void dowork(BackupTaskModel backupTaskModel){
         Calendar now = Calendar.getInstance();
-        boolean fullback = forceFullback;
-        boolean toback = forceFullback;
-        int dayIndex = 0;
-        if(!fullback){
-            if(backupTaskModel.getP_state()==0){
-                return;
-            }
-            if(backupTaskModel.getP_backupCorns()!=null){
-                for(BackupCorn backupCorn:backupTaskModel.getP_backupCorns()){
-                    if(backupCorn.getP_timeType()==1){
-                        dayIndex = now.get(Calendar.DAY_OF_MONTH);
-                    }else  if(backupCorn.getP_timeType()==2){
-                        dayIndex = now.get(Calendar.DAY_OF_MONTH);
-                    }else{
-                        dayIndex = now.get(Calendar.HOUR_OF_DAY);
-                    }
-                    if(backupCorn.getP_timeIndex()!=null&&backupCorn.getP_timeIndex().size()>0){
-                        for(Integer timeIndex :backupCorn.getP_timeIndex()){
-                            if(dayIndex==timeIndex){
-                                toback = true;//需要执行备份操作
-                                if(backupCorn.getP_backupMode()==1){
-                                    fullback=true;//全量备份
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if(fullback){
-                        break;
-                    }
-                    
-                }
-            }
-            
-           
-        }
+        boolean fullback = backupTaskModel.getP_backupMode()==1;
 
-        if(toback){
-            
-            backupTaskModel.setP_beginTime(now.getTime());
-            backupTaskModel.setP_runsSate(1);
-            GlobleImpl.getGlobleCfgStatic().setBackupTaskModel(backupTaskModel);
-
-           
-
-            doBackup(backupTaskModel,fullback,now.getTime()); 
-
-            backupTaskModel.setP_lastTime(new Date());
-            backupTaskModel.setP_runsSate(0);           
-            GlobleImpl.getGlobleCfgStatic().setBackupTaskModel(backupTaskModel);
-        }
+        backupTaskModel.setP_beginTime(now.getTime());
+        backupTaskModel.setP_runsSate(1);
+        GlobleImpl.getGlobleCfgStatic().setBackupTaskModel(backupTaskModel); 
+        doBackup(backupTaskModel,fullback,now.getTime()); 
+        backupTaskModel.setP_lastTime(new Date());
+        backupTaskModel.setP_runsSate(0);           
+        GlobleImpl.getGlobleCfgStatic().setBackupTaskModel(backupTaskModel);
        
 
     }
@@ -96,13 +54,13 @@ public class BackupAndUpload {
         String saveName ="";
         
         for(String dbName:backupTaskModel.getP_dbAndTables().keySet()){
-            String saveBaseDir = GlobleImpl.getGlobleCfgStatic().getSavepath() + File.separator+backupTaskModel.getP_id()+"-" +dbName+ File.separator;
+            String saveBaseDir = GlobleImpl.getGlobleCfgStatic().getSavepath() + File.separator+backupTaskModel.getP_host()+ "-" + backupTaskModel.getP_port() + File.separator;
             File saveFile = new File(saveBaseDir);
             saveBaseDir = saveFile.getAbsolutePath();
             if (!saveBaseDir.endsWith(File.separator)) {
                 saveBaseDir = saveBaseDir + File.separator;
             }            
-            saveName = dbName + (fullback?"-full":"-increment") + "-" +  dateTimeStr;
+            saveName = dateTimeStr + "-" + dbName +  (fullback?"-full":"-increment") ;
             String dbPWD = "";
             try{
                 dbPWD = AESUtils.decryptStr(backupTaskModel.getP_pwd(),GlobleImpl.getGlobleCfgStatic().getDbEnKey());
@@ -111,6 +69,16 @@ public class BackupAndUpload {
             }
             try{
                 switch(backupTaskModel.getP_backType()){
+                    case 0:MysqlDumpTool.backup(
+                            backupTaskModel.getP_host(),
+                            backupTaskModel.getP_port().toString(),
+                            backupTaskModel.getP_user(),
+                            dbPWD,
+                            saveBaseDir+saveName,
+                            dbName,
+                            dbName,
+                            backupTaskModel.isP_compress());
+                            break;
                     case 1:XtraBackupDumpTool.backup(
                                 backupTaskModel.getP_host(),
                                 backupTaskModel.getP_port().toString(),
@@ -184,7 +152,7 @@ public class BackupAndUpload {
         File[] subFolders = folder.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                if (file.isDirectory() && file.getName().toLowerCase().contains("-full-")) {
+                if (file.isDirectory() && file.getName().toLowerCase().endsWith("-full")) {
                     return true;
                 }
                 return false;

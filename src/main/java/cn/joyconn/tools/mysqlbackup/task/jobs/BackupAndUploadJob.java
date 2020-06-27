@@ -39,7 +39,7 @@ public class BackupAndUploadJob extends SingleChannelBaseJob {
             if (backupTaskModels!=null){
                 for(BackupTaskModel backupTaskModel:backupTaskModels){
                     if(backupTaskModel!=null){
-                        BackupAndUpload.dowork(backupTaskModel,false);
+                        BackupAndUpload.dowork(backupTaskModel);
                     }
                 }
             }

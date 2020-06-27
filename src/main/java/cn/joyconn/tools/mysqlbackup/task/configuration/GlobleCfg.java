@@ -1,10 +1,10 @@
 package cn.joyconn.tools.mysqlbackup.task.configuration;
 
-
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import cn.joyconn.tools.mysqlbackup.task.handle.TaskBusHandle;
 import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
 import cn.joyconn.tools.mysqlbackup.task.utils.AESUtils;
 import cn.joyconn.tools.mysqlbackup.task.utils.DBObjectID;
@@ -26,8 +26,8 @@ public class GlobleCfg {
      String  dbEnKey;
     @Value("${databack.savepath}")
     String  savepath;
-    @Value("${databack.runCorn}")
-    String  runCorn;
+    @Value("${databack.msyqlDumpPath}")
+    String  msyqlDumpPath;
     public String getDataPath(){
         return dataPath;
     }
@@ -36,9 +36,6 @@ public class GlobleCfg {
     }
     public String getSavepath(){
         return savepath;
-    }
-    public String getRunCorn(){
-        return runCorn;
     }
 
     ObjectMapper objectMapper =new ObjectMapper();
@@ -71,6 +68,7 @@ public class GlobleCfg {
             model.setP_pwd(AESUtils.encryptStr(dblink,dbEnKey));
             backupTaskModelMap.put(model.getP_id(),model);
             saveDBCfgData();
+            TaskBusHandle.startOrResetBackupAndUploadRemote(model.getP_id());
 
         }
         return model;
@@ -82,6 +80,7 @@ public class GlobleCfg {
 
             backupTaskModelMap.remove(id);
             saveDBCfgData();
+            TaskBusHandle.deleteBackupAndUploadRemote(id);
 
         }
     }
@@ -153,5 +152,13 @@ public class GlobleCfg {
         }finally {
             readWriteBackupCfgLock.writeLock().unlock();
         }
+    }
+
+    public String getMsyqlDumpPath() {
+        return msyqlDumpPath;
+    }
+
+    public void setMsyqlDumpPath(String msyqlDumpPath) {
+        this.msyqlDumpPath = msyqlDumpPath;
     }
 }

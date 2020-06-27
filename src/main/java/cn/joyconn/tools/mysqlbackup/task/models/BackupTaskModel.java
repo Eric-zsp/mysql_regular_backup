@@ -70,10 +70,17 @@ public class BackupTaskModel {
      */
     private Date p_lastTime;
   
+  
+
     /**
      * 备份执行计划
      */
-    private List<BackupCorn> p_backupCorns;
+    private String p_corn;
+
+    /**
+     * 备份方式 1完整备份 2增量备份
+     */
+    private int p_backupMode;
 
     
 
@@ -130,7 +137,7 @@ public class BackupTaskModel {
         this.p_port = p_port;
     }
 
-    @ApiModelProperty("备份类型 1:innobackupex24(mysql 5) 2:mariadb")
+    @ApiModelProperty("备份类型 0:mysqldump 1:innobackupex24 2:mariabackup")
     public Integer getP_backType() {
         return p_backType;
     }
@@ -202,14 +209,7 @@ public class BackupTaskModel {
         this.p_lastTime = p_lastTime;
     }
 
-    @ApiModelProperty("备份执行计划")
-    public List<BackupCorn> getP_backupCorns() {
-        return p_backupCorns;
-    }
 
-    public void setP_backupCorns(List<BackupCorn> p_backupCorns) {
-        this.p_backupCorns = p_backupCorns;
-    }
 
     @ApiModelProperty("备注")
     public String getP_remarks() {
@@ -264,6 +264,22 @@ public class BackupTaskModel {
 
     public void setP_compress(boolean p_compress) {
         this.p_compress = p_compress;
+    }
+
+    public String getP_corn() {
+        return p_corn;
+    }
+
+    public void setP_corn(String p_corn) {
+        this.p_corn = p_corn;
+    }
+
+    public int getP_backupMode() {
+        return p_backupMode;
+    }
+
+    public void setP_backupMode(int p_backupMode) {
+        this.p_backupMode = p_backupMode;
     }
 
 

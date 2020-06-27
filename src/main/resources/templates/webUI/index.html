@@ -193,7 +193,22 @@
                                         <input type="text" data-name="p_remarks"  class="form-control  feild-edit" value=""/>
                                     </div>
                                 </div>
-
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        备份方式
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control  feild-edit"  data-name="p_backupMode"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">
+                                        执行计划
+                                    </label>
+                                    <div class="col-sm-10"> 
+                                        <input class="form-control  feild-edit"  data-name="p_corn" value="" placeholder="请输入cron表达式" />                      
+                                    </div>
+                                </div>
                                 <div class="form-group"><span class="text-red add_error_note"></span></div>
                                 
                                 <div class="form-group">
@@ -223,7 +238,7 @@
                                         </tfoot>
                                     </table>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group"  style="display: none;">
                                     <label class="col-sm-12 text-red">
                                         执行计划
                                     </label>
@@ -387,7 +402,8 @@
     <script src="/plugins/daterangepicker/daterangepicker.js"></script>
 
     <script type="text/javascript" src="/plugins/bootstrap-select/bootstrap-select.js"></script>
-    <link rel="stylesheet" type="text/css" href="/plugins/bootstrap-select/bootstrap-select.css">
+    <link rel="stylesheet" type="text/css" href="/plugins/bootstrap-select/bootstrap-select.css" />
+    <script src="/plugins/cronGen/cronGen.js"></script>
 
     <script type="text/javascript">
         /**
@@ -451,7 +467,7 @@
             }
         }
         backupSttingPage_operat.data.backType={
-            valueNames:[{value:1,name:"innobackupex24(mysql 5)"},{value:2,name:"mariadb"}],
+            valueNames:[{value:0,name:"mysqldump"},{value:1,name:"innobackupex24"},{value:2,name:"mariabackup"}],
             getName:function (value) {
                 var result = '';
                 $(this.valueNames).each(function (i, vn) {
@@ -588,13 +604,16 @@
                     })
                     
                 }
-                if(model.p_backupCorns){
-                    $.each(model.p_backupCorns,function(i,cornObj){
-                        showBackupCornModel(null,cornObj);
-                    })
+                // if(model.p_backupCorns){
+                //     $.each(model.p_backupCorns,function(i,cornObj){
+                //         showBackupCornModel(null,cornObj);
+                //     })
              
-                }
+                // }
             }
+            // $(diaElement).find('.feild-edit[data-name="p_corn"]').cronGen({
+            //     direction : 'right'
+            //     }); 
             var width = $(window).width();
             width = width - 250;
             if (width < 100) {
@@ -612,13 +631,6 @@
                             editDataBaseModel(null,null)
                             return false;
                         }
-                    },
-                    {
-                        value: '添加执行计划',
-                        callback: function () {
-                            editBackupCornModel(null,null)
-                            return false;
-                        }
                     }
                 ],
                 okValue: title,
@@ -627,7 +639,6 @@
                     $(diaElement).find(".feild-edit").each(function (i, ele) {
                         postObj[$(ele).attr("data-name")] = $(ele).val();
                     })
-                    postObj.p_backupCorns=[];
                     postObj.p_dbAndTables={};
                     postObj.p_remoteType=[];
                     postObj.p_remoteCfg={};
@@ -645,20 +656,21 @@
                             }
                         }
                     })
-                    $(diaElement).find('.BackupCornTable tbody tr').each(function(i,tr){
+                    // postObj.p_backupCorns=[];
+                    // $(diaElement).find('.BackupCornTable tbody tr').each(function(i,tr){
 
-                        var p_backupMode = $(tr).find('.field[field-name="p_backupMode"]').attr("value");
-                        var p_timeType = $(tr).find('.field[field-name="p_timeType"]').attr("value");
-                        var p_timeIndex=[];
-                        $(tr).find('.field[field-name="p_timeIndex"] .timeIndex').each(function(j,span){
-                            p_timeIndex.push($(span).attr("value"))
-                        })
-                        postObj.p_backupCorns.push({
-                            p_backupMode:p_backupMode,
-                            p_timeType:p_timeType,
-                            p_timeIndex:p_timeIndex
-                        })
-                    })
+                    //     var p_backupMode = $(tr).find('.field[field-name="p_backupMode"]').attr("value");
+                    //     var p_timeType = $(tr).find('.field[field-name="p_timeType"]').attr("value");
+                    //     var p_timeIndex=[];
+                    //     $(tr).find('.field[field-name="p_timeIndex"] .timeIndex').each(function(j,span){
+                    //         p_timeIndex.push($(span).attr("value"))
+                    //     })
+                    //     postObj.p_backupCorns.push({
+                    //         p_backupMode:p_backupMode,
+                    //         p_timeType:p_timeType,
+                    //         p_timeIndex:p_timeIndex
+                    //     })
+                    // })
                     $(diaElement).find('.remoteStoreTable tbody tr').each(function(i,tr){
 
                     })
@@ -688,6 +700,13 @@
                     if (postObj.p_user.trim()=="") {
                         dialog({
                             content: '请填写数据库连接用户',
+                            quickClose: true,
+                        }).show();
+                        return false;
+                    }
+                    if (postObj.p_corn.trim()=="") {
+                        dialog({
+                            content: '请填写执行计划',
                             quickClose: true,
                         }).show();
                         return false;
@@ -867,6 +886,9 @@
         $(function () {
             $.each(backupSttingPage_operat.data.backType.valueNames,function(i,vm){
                 $('.edit_div .feild-edit[data-name="p_backType"]').append('<option value="'+vm.value+'" '+(i==0?'selected':'')+'>'+vm.name+'</option>')
+            })
+            $.each(backupSttingPage_operat.data.backupMode.valueNames,function(i,vm){
+                $('.edit_div .feild-edit[data-name="p_backupMode"]').append('<option value="'+vm.value+'" '+(i==0?'selected':'')+'>'+vm.name+'</option>')
             })
             
             getList();

@@ -43,31 +43,50 @@ public class DataClearJob extends SingleChannelBaseJob {
         try {
             Calendar calendar = Calendar.getInstance();
             Date now =new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateTimeStr = dateFormat.format(new Date());
             try {
                 Collection<BackupTaskModel> backupTaskModels = GlobleImpl.getGlobleCfgStatic().getBackupTaskModels();
                 if (backupTaskModels!=null){                    
-                    String _fileName = "";
-                    File file;
-                    File[] files;
-                    for(BackupTaskModel backupTaskModel:backupTaskModels){
-                        if(backupTaskModel!=null&&backupTaskModel.getP_dbAndTables()!=null){
-                            calendar.setTime(now);
-                            calendar.add(Calendar.DATE,0-backupTaskModel.getP_retentionTime());         
-                            _fileName = dateFormat.format(calendar.getTime());
-                            file = new File(GlobleImpl.getGlobleCfgStatic().getSavepath()+ File.separator+backupTaskModel.getP_id() + File.separator);
-                            files = file.listFiles();
-                            if (files != null) {
-                                for(File f:files){
-                                    if(f.isDirectory()&&f.getName().length()==10){                                                
-                                        if(_fileName.compareTo(f.getName())>0){
-                                            f.delete();
+                    // String _fileName = "";
+                    // File file;
+                    // File[] files;
+                    String hostPortDirName;
+                    File baseDir = new File(GlobleImpl.getGlobleCfgStatic().getSavepath());
+                    File[] hostDirs;
+                    File[] saveDirs;
+                    String lastDateDir;
+                    String saveDirTime;
+                    if(baseDir!=null && baseDir.exists() && baseDir.isDirectory()){
+                        hostDirs = baseDir.listFiles();
+                        for(File hostDir : hostDirs){                       
+                            if(hostDir.isDirectory()){
+                                for(BackupTaskModel backupTaskModel : backupTaskModels){
+                                    if(backupTaskModel!=null){
+                                        hostPortDirName=backupTaskModel.getP_host()+"-"+backupTaskModel.getP_port();
+                                        if(hostPortDirName.equals(hostDir.getName())){
+                                            calendar.setTime(now);
+                                            calendar.add(Calendar.DATE,0-backupTaskModel.getP_retentionTime());                                             
+                                            lastDateDir = dateFormat.format(calendar.getTime());   
+                                            saveDirs = hostDir.listFiles();
+                                            if(saveDirs!=null){
+                                                for(File saveDir : saveDirs){
+                                                    if(saveDir.length()>lastDateDir.length()){
+                                                        saveDirTime=saveDir.getName().substring(0,lastDateDir.length());
+                                                        if(saveDirTime.compareTo(lastDateDir)<0){
+                                                            saveDir.delete();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
                                         }
                                     }
                                 }
-                            }                            
+                            }
                         }
-                    }
+                    } 
+                    
                 }
             }catch (Exception ex){
                 LogHelper.logger().error(ex.getMessage());
