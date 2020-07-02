@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.util.Strings;
 
 import cn.joyconn.tools.mysqlbackup.task.utils.LogHelper;
+import cn.joyconn.tools.mysqlbackup.task.utils.ProcessUtil;
 
 public class MariadbDumpTool {
     public static void backup(String hostIP,String port, String userName, String password, String savePath, String databaseName,List<String> tables
@@ -48,8 +49,9 @@ public class MariadbDumpTool {
         }
         stringBuilder.append(" --target-dir ").append(savePath);
         try {
-           Process process = Runtime.getRuntime().exec(stringBuilder.toString());
-           int processResult = process.waitFor();
+            LogHelper.logger().info("开始执行:"+stringBuilder.toString());    
+            Process process = ProcessUtil.doProcess(stringBuilder.toString());
+            int processResult = process.waitFor();
             if (processResult == 0) {// 0 表示线程正常终止。
                 LogHelper.logger().info("数据库备份成功");
             }

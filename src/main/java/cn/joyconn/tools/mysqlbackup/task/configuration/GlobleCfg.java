@@ -3,6 +3,7 @@ package cn.joyconn.tools.mysqlbackup.task.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import cn.joyconn.tools.mysqlbackup.task.handle.TaskBusHandle;
 import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
@@ -88,12 +89,19 @@ public class GlobleCfg {
 
 
     private String getDbCfgPath(){
-        File directory = new File("");//设定为当前文件夹
-        try{
-
-            return directory.getAbsolutePath()+"/"+dataPath;//获取绝对路径
-        }catch(Exception e){}
-        return "";
+        String abPath = "";
+        if(dataPath.startsWith("classpath:")) {
+            try {
+                File file = ResourceUtils.getFile(dataPath);
+                abPath = file.getAbsolutePath();
+            } catch (Exception ex){
+                LogHelper.logger().error(ex.getMessage());
+            }
+        }else{
+            File file = new File(dataPath); 
+            abPath = file.getAbsolutePath();
+        }
+        return abPath;
     }
     private boolean readDBCfgData() {
         Boolean result =false;
@@ -142,7 +150,8 @@ public class GlobleCfg {
                 String saveFilePath = getDbCfgPath();
 
                 if(saveFilePath!=null&&!saveFilePath.equals("")){
-                    FileHelper.writeFile(saveFilePath,objectMapper.writeValueAsString(backupTaskModelMap.values()));
+                    String saveStr = objectMapper.writeValueAsString(backupTaskModelMap.values());
+                    FileHelper.writeFile(saveFilePath,saveStr,"utf8");
                 }
 
             }

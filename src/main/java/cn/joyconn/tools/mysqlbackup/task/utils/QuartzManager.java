@@ -209,6 +209,25 @@ public class QuartzManager {
         }
     }
 
+        /**
+     * @Description:启动所有定时任务
+     */
+    public static void startJob(String triggerName, String triggerGroupName) {
+        try {
+            Scheduler sched = schedulerFactory.getScheduler();
+            TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroupName);
+            CronTrigger trigger = (CronTrigger) sched.getTrigger(triggerKey);
+            if (trigger == null) {
+                return ;
+            }
+            sched.triggerJob(trigger.getJobKey());
+            
+        } catch (Exception e) {
+            LogHelper.logger().error("触发任务失败："+e.getMessage());
+            //throw new RuntimeException(e);
+        }
+    }
+
     /**
      * @Description:关闭所有定时任务
      */
@@ -221,6 +240,49 @@ public class QuartzManager {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 
+     */
+    public static JobDetail getJobDetail(String jobName, String jobGroupName,String triggerName, String triggerGroupName) {
+        JobDetail jobDetail=null;
+        try {
+            
+            Scheduler sched = schedulerFactory.getScheduler();
+            
+            TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroupName);
+            Trigger trigger = sched.getTrigger(triggerKey);
+            if (trigger == null) {
+                return jobDetail;
+            }
+            jobDetail = sched.getJobDetail(trigger.getJobKey());
+            
+        } catch (Exception e) {
+            LogHelper.logger().error("触发任务失败："+e.getMessage());
+            //throw new RuntimeException(e);
+        }
+        return jobDetail;
+    }
+
+    /**
+     * 
+     */
+    public static Trigger getTrigger(String triggerName, String triggerGroupName) {
+        Trigger trigger=null;
+        try {
+            
+            Scheduler sched = schedulerFactory.getScheduler();
+            
+            TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroupName);            
+             trigger = sched.getTrigger(triggerKey);
+            
+            
+        } catch (Exception e) {
+            LogHelper.logger().error("触发任务失败："+e.getMessage());
+            //throw new RuntimeException(e);
+        }
+        return trigger;
     }
 
 //    public static int getThreadPool(){

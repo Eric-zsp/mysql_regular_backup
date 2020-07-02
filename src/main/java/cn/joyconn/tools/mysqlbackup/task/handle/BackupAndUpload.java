@@ -49,6 +49,13 @@ public class BackupAndUpload {
         if(backupTaskModel.getP_dbAndTables()==null){
             return;
         }        
+        // LogHelper.logger().info(backupTaskModel.getP_name()+backupTaskModel.getP_id());
+        // try{
+        //     Thread.sleep(60*60*1000);
+        // }catch(Exception ex){
+
+        // }
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String dateTimeStr = dateFormat.format(new Date());
         String saveName ="";

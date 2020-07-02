@@ -1,6 +1,8 @@
 package cn.joyconn.tools.mysqlbackup.task.handle;
 
 import org.quartz.JobDetail;
+import org.quartz.Trigger;
+
 import cn.joyconn.tools.mysqlbackup.task.configuration.GlobleImpl;
 import cn.joyconn.tools.mysqlbackup.task.jobs.BackupAndUploadJob;
 import cn.joyconn.tools.mysqlbackup.task.jobs.DataClearJob;
@@ -14,10 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 //任务总线
 public class TaskBusHandle {
-    private static QuartzManager quartzManager;
-    public static void setQuartzManager (QuartzManager qm){
-        quartzManager = qm;
-    }
+    // private static QuartzManager quartzManager;
+    // public static void setQuartzManager (QuartzManager qm){
+    //     quartzManager = qm;
+    // }
 
     static ConcurrentHashMap<String,HashMap<String,String>> jobsVarible = new ConcurrentHashMap<>();
 
@@ -44,19 +46,24 @@ public class TaskBusHandle {
         //     //region 数据采集任务
         //     String jobName="BackupAndUploadJob";
         //     String jobGroupName="BackupAndUploadJob";
-        //     String tiggerName=jobName+"_Tigger";
-        //     String tiggerGroupName= "BackupAndUploadJobTigger";
+        //     String triggerName=jobName+"_Trigger";
+        //     String triggerGroupName= "BackupAndUploadJobTrigger";
         //     Class jobClass = BackupAndUploadJob.class;
-        //     int update=quartzManager.modifyJobTime(jobName,jobGroupName,corn);
-        //     if(update<0){//任务不存在
-        //         JobDetail jobDetail = quartzManager.addJob(jobName,
+        //     Trigger trigger = QuartzManager.getTrigger(triggerName, triggerGroupName);  
+        //     if(trigger == null){//任务不存在
+        //         JobDetail jobDetail = QuartzManager.addJob(jobName,
         //                 jobGroupName,
-        //                 tiggerName,
-        //                 tiggerGroupName,
+        //                 triggerName,
+        //                 triggerGroupName,
         //                 jobClass,
         //                 corn,false);//每两秒执行一次
 
-        //     }
+        //     }  else {
+        //         QuartzManager.modifyJobTime(
+        //             triggerName,
+        //             triggerGroupName,
+        //             backupTaskModel.getP_corn());
+        // }
         //     //endregion
 
 
@@ -83,6 +90,9 @@ public class TaskBusHandle {
     }
 
     
+    /**
+     * 启动或修改一个计划任务
+     */
     public   static void startOrResetBackupAndUploadRemote( String id){
         try {
 
@@ -92,27 +102,32 @@ public class TaskBusHandle {
                 //region 数据采集任务
                 String jobName="BackupAndUploadJob"+backupTaskModel.getP_id();
                 String jobGroupName="BackupAndUploadJob";
-                String tiggerName=jobName+"_Tigger";
-                String tiggerGroupName= "BackupAndUploadJobTigger";
+                String triggerName=jobName+"_Trigger";
+                String triggerGroupName= "BackupAndUploadJobTrigger";
                 Class jobClass = BackupAndUploadJob.class;
-                int update= quartzManager.modifyJobTime(jobName,jobGroupName,backupTaskModel.getP_corn());                                
-                if(update<0){//任务不存在
+                Trigger trigger = QuartzManager.getTrigger(triggerName, triggerGroupName);                               
+                if(trigger == null){//任务不存在
                     HashMap<String,String> map = new HashMap<>();
-                    map.put("inquiryTaskID",String.valueOf(id));
+                    map.put("taskID",String.valueOf(id));
                     map.put("quartz_jobName",jobName);
                     map.put("quartz_jobGroupName",jobGroupName);
-                    map.put("quartz_triggerName",tiggerName);
-                    map.put("quartz_triggerGroupName",tiggerGroupName);
+                    map.put("quartz_triggerName",triggerName);
+                    map.put("quartz_triggerGroupName",triggerGroupName);
                     QuartzManager.putJobVarible(jobName,map);
-                    JobDetail jobDetail = quartzManager.addJob(jobName,
+                    JobDetail jobDetail = QuartzManager.addJob(jobName,
                             jobGroupName,
-                            tiggerName,
-                            tiggerGroupName,
+                            triggerName,
+                            triggerGroupName,
                             jobClass,
                             backupTaskModel.getP_corn(),false,
                             (a)->a.withMisfireHandlingInstructionDoNothing());
 
-                }  
+                }  else {
+                    QuartzManager.modifyJobTime(
+                            triggerName,
+                            triggerGroupName,
+                            backupTaskModel.getP_corn());
+                }
                 //endregion
             }
 
@@ -123,6 +138,34 @@ public class TaskBusHandle {
         }
     }
     
+    /**
+     *  触发一个计划任务
+     * @param id
+     */
+    public   static void triggerBackupAndUploadRemote( String id){
+        try {
+
+            BackupTaskModel backupTaskModel = GlobleImpl.getGlobleCfgStatic().getBackupTaskModel(id);  
+            if(backupTaskModel!=null){
+               
+                //region 数据采集任务
+                String jobName="BackupAndUploadJob"+backupTaskModel.getP_id();
+                String jobGroupName="BackupAndUploadJob";
+                String triggerName=jobName+"_Trigger";
+                String triggerGroupName= "BackupAndUploadJobTrigger";
+                QuartzManager.startJob(triggerName,triggerGroupName);                               
+                
+                //endregion
+            }
+
+
+
+        }catch (Exception ex){
+            LogHelper.logger().error("启动一个或重启一个一个task时失败,backup task ID:"+id);
+        }
+    }
+    
+
     public   static void deleteBackupAndUploadRemote( String id){
         try {
 
@@ -132,10 +175,10 @@ public class TaskBusHandle {
                 //region 数据采集任务
                 String jobName="BackupAndUploadJob"+backupTaskModel.getP_id();
                 String jobGroupName="BackupAndUploadJob";
-                String tiggerName=jobName+"_Tigger";
-                String tiggerGroupName= "BackupAndUploadJobTigger";
+                String triggerName=jobName+"_Trigger";
+                String triggerGroupName= "BackupAndUploadJobTrigger";
                 Class jobClass = BackupAndUploadJob.class;
-                quartzManager.removeJob(jobName,jobGroupName,tiggerName,tiggerGroupName);                                
+                QuartzManager.removeJob(jobName,jobGroupName,triggerName,triggerGroupName);                                
                 
                 //endregion
             }
@@ -154,18 +197,23 @@ public class TaskBusHandle {
             //region 数据采集任务
             String jobName="DataClearJob";
             String jobGroupName="DataClearJob";
-            String tiggerName=jobName+"_Tigger";
-            String tiggerGroupName= "DataClearJobTigger";
+            String triggerName=jobName+"_Trigger";
+            String triggerGroupName= "DataClearJobTrigger";
             Class jobClass = DataClearJob.class;
-            int update=quartzManager.modifyJobTime(jobName,jobGroupName,corn);
-            if(update<0){//任务不存在
-                JobDetail jobDetail = quartzManager.addJob(jobName,
+            Trigger trigger = QuartzManager.getTrigger(triggerName, triggerGroupName);   
+            if(trigger == null){//任务不存在
+                JobDetail jobDetail = QuartzManager.addJob(jobName,
                         jobGroupName,
-                        tiggerName,
-                        tiggerGroupName,
+                        triggerName,
+                        triggerGroupName,
                         jobClass,
                         corn,false);
 
+            }  else {
+                QuartzManager.modifyJobTime(
+                        triggerName,
+                        triggerGroupName,
+                        corn);
             }
             //endregion
 

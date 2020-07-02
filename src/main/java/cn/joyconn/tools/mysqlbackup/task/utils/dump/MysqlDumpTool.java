@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import cn.joyconn.tools.mysqlbackup.task.configuration.GlobleImpl;
 import cn.joyconn.tools.mysqlbackup.task.utils.LogHelper;
+import cn.joyconn.tools.mysqlbackup.task.utils.ProcessUtil;
 import net.bytebuddy.agent.builder.AgentBuilder.CircularityLock.Global;
 
 public class MysqlDumpTool {
@@ -26,7 +27,8 @@ public class MysqlDumpTool {
                 }
                 stringBuilder.append(" >").append(savePath+fileName);
         try {
-           Process process = Runtime.getRuntime().exec(stringBuilder.toString());
+            LogHelper.logger().info("开始执行:"+stringBuilder.toString());            
+           Process process = ProcessUtil.doProcess(stringBuilder.toString());
            int processResult = process.waitFor();
             if (processResult == 0) {// 0 表示线程正常终止。
                 LogHelper.logger().info("数据库备份成功");

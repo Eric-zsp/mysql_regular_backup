@@ -8,6 +8,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
 import cn.joyconn.tools.mysqlbackup.task.utils.LogHelper;
+import cn.joyconn.tools.mysqlbackup.task.utils.ProcessUtil;
 
 public class XtraBackupDumpTool {
   
@@ -49,7 +50,7 @@ public class XtraBackupDumpTool {
         stringBuilder.append(" ").append(savePath);
         try {
             LogHelper.logger().info("开始执行:"+stringBuilder.toString());
-           Process process = Runtime.getRuntime().exec(stringBuilder.toString());
+           Process process = ProcessUtil.doProcess(stringBuilder.toString());
            int processResult = process.waitFor();
             if (processResult == 0) {// 0 表示线程正常终止。
                 LogHelper.logger().info("数据库备份成功");

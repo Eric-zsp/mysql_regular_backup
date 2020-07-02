@@ -12,6 +12,7 @@ import org.springframework.web.util.UriBuilder;
 
 import cn.joyconn.tools.mysqlbackup.task.configuration.GlobleCfg;
 import cn.joyconn.tools.mysqlbackup.task.handle.BackupAndUpload;
+import cn.joyconn.tools.mysqlbackup.task.handle.TaskBusHandle;
 import cn.joyconn.tools.mysqlbackup.task.models.BackupTaskModel;
 import cn.joyconn.tools.mysqlbackup.task.models.PostBackupTaskModel;
 import cn.joyconn.tools.mysqlbackup.task.utils.AESUtils;
@@ -70,7 +71,8 @@ public class CfgApi {
     }
     @RequestMapping(value = "runBackupTaskModel", method = RequestMethod.POST)
     void runBackupTaskModel(String id,HttpServletRequest request) throws IOException {
-        BackupTaskModel backupTaskModel = globleCfg.getBackupTaskModel(id);
-        BackupAndUpload.dowork(backupTaskModel);
+        // BackupTaskModel backupTaskModel = globleCfg.getBackupTaskModel(id);
+        // BackupAndUpload.dowork(backupTaskModel);
+        TaskBusHandle.triggerBackupAndUploadRemote(id);
     }
 }
